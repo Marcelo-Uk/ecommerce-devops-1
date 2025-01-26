@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cartões</title>
+    <link rel="stylesheet" href="assets/css/cartoes.css">
+
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-text">
+                <h1>Pagamento</h1>
+                <p>No momento estamos aceitando apenas pagamentos em Cartões</p>
+            </div>
+        </div>
+    </header>
+
+    <!-- Body -->
+    <main class="body-container">
+        <form id="cardForm" class="card-form">
+            <div class="form-group">
+                <label for="cardNumber">Número do Cartão</label>
+                <input type="text" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19" required>
+            </div>
+    
+            <div class="form-group">
+                <label for="cardName">Nome no Cartão</label>
+                <input type="text" id="cardName" placeholder="Nome completo" required>
+            </div>
+    
+            <div class="form-group">
+                <label for="cardExpiry">Data de Validade</label>
+                <input type="text" id="cardExpiry" placeholder="MM/AA" maxlength="5" required>
+            </div>
+    
+            <div class="form-group">
+                <label for="cardCVV">CVV</label>
+                <input type="text" id="cardCVV" placeholder="000" maxlength="3" required>
+            </div>
+    
+            <!-- Opção de Débito ou Crédito -->
+            <div class="form-group">
+                <label>Tipo de Pagamento</label>
+                <div class="payment-options">
+                    <label>
+                        <input type="radio" name="paymentType" value="debito" required> Débito
+                    </label>
+                    <label>
+                        <input type="radio" name="paymentType" value="credito" required> Crédito
+                    </label>
+                </div>
+            </div>
+    
+            <button type="submit" class="btn-submit">Enviar</button>
+    
+            <!-- Botão Voltar ao Carrinho -->
+            <button id="btn-back-cart" class="btn-back-cart">Voltar ao Carrinho</button>
+        </form>
+    </main>
+    
+    
+    
+    <script src="assets/js/cartoes.js"></script>
+    
+    
+    
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/cartoes.js"></script>
+    <script src="assets/js/logout.js"></script>
+
+
+</body>
+</html>

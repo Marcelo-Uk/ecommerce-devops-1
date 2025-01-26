@@ -1,0 +1,99 @@
+/* Estilo geral da página */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9; /* Cor de fundo leve */
+    color: #333;
+}
+
+/* Estilo do cabeçalho */
+.header {
+    background-color: #4CAF50; /* Verde para o cabeçalho */
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+.header-text h1 {
+    margin: 0;
+    font-size: 2.5rem;
+}
+
+.header-text p {
+    margin: 5px 0 0;
+    font-size: 1rem;
+}
+
+.header-buttons {
+    margin-top: 10px;
+}
+
+.header-buttons a, 
+.header-buttons button {
+    text-decoration: none;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    background-color: #ff9800; /* Botões laranja */
+    cursor: pointer;
+}
+
+.header-buttons button:hover,
+.header-buttons a:hover {
+    background-color: #e68900; /* Escurece no hover */
+}
+
+/* Estilo do corpo principal */
+.body-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 150px); /* Altura completa, menos o cabeçalho */
+    padding: 20px;
+}
+
+.product-form {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+}
+
+/* Estilo dos campos do formulário */
+.product-form input, 
+.product-form textarea, 
+.product-form button {
+    display: block;
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.product-form input:focus, 
+.product-form textarea:focus, 
+.product-form button:focus {
+    border-color: #4CAF50;
+    outline: none;
+}
+
+/* Estilo do botão */
+.product-form button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.product-form button:hover {
+    background-color: #45a049; /* Cor mais escura no hover */
+}

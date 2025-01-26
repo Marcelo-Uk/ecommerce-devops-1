@@ -1,0 +1,132 @@
+/* Estilo geral da página */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f9; /* Cor de fundo */
+    color: #333;
+}
+
+/* Estilo do cabeçalho */
+.header {
+    background-color: #4CAF50; /* Verde para o cabeçalho */
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+.header-text h1 {
+    margin: 0;
+    font-size: 2rem;
+}
+
+.header-text p {
+    margin: 5px 0 0;
+    font-size: 1rem;
+}
+
+/* Estilo do container principal */
+.body-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 150px); /* Altura total menos o cabeçalho */
+    padding: 20px;
+}
+
+/* Grupos de campos */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.form-group input:focus {
+    border-color: #4CAF50;
+    outline: none;
+}
+
+
+
+/* Estilo para as opções de pagamento */
+.payment-options {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+    margin-right: 20px;
+    margin-left: 20px;
+}
+
+.payment-options label {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.payment-options input[type="radio"] {
+    margin-right: 5px;
+}
+
+/* Estilo geral do formulário */
+.card-form {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+/* Botão Enviar */
+.btn-submit {
+    display: block;
+    width: 100%;
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    transition: background-color 0.3s ease;
+}
+
+.btn-submit:hover {
+    background-color: #45a049;
+}
+
+/* Botão Voltar ao Carrinho */
+.btn-back-cart {
+    display: block;
+    width: 100%;
+    background-color: #ccc;
+    color: #333;
+    padding: 10px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.btn-back-cart:hover {
+    background-color: #bbb;
+}

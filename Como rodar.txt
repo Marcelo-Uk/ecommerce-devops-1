@@ -1,0 +1,13 @@
+Entrar na pasta frontend e iniciar o servidor web:
+
+python -m http.server 5500
+
+Acessar o link: http://127.0.0.1:5500 (a pagina de login vai abrir)
+
+Rodar o login no servidor 8000 (micro_login)
+Rodar o envio de produtos no servidor 8001 (micro_sendproduto)
+Rodar o recebimento de produtos no servidor 8002 (sistema-main)
+	- Na pagina de admin, é possível ver os produtos no banco
+Rodar o sistema de validação de cartões no servidor 8003 (micro_pgt_cards)
+
+
