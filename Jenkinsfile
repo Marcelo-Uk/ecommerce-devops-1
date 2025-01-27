@@ -37,7 +37,9 @@ pipeline {
                 dir("${WORKSPACE_FRONT}") {
                     bat """
                     echo Iniciando o servidor frontend...
-                    start /B python -m http.server 5500
+                    start /B python -m http.server 5500 > frontend.log 2>&1
+                    timeout 5
+                    echo Servidor frontend iniciado.
                     """
                 }
             }
@@ -51,7 +53,9 @@ pipeline {
                     python -m venv venv
                     call venv\\Scripts\\activate
                     pip install -r requirements.txt
-                    start /B python manage.py runserver 8000
+                    start /B python manage.py runserver 8000 > login.log 2>&1
+                    timeout 5
+                    echo Microserviço de login iniciado.
                     """
                 }
             }
@@ -65,7 +69,9 @@ pipeline {
                     python -m venv venv
                     call venv\\Scripts\\activate
                     pip install -r requirements.txt
-                    start /B python manage.py runserver 8001
+                    start /B python manage.py runserver 8001 > sendproduct.log 2>&1
+                    timeout 5
+                    echo Microserviço de envio de produtos iniciado.
                     """
                 }
             }
@@ -79,7 +85,9 @@ pipeline {
                     python -m venv venv
                     call venv\\Scripts\\activate
                     pip install -r requirements.txt
-                    start /B python manage.py runserver 8002
+                    start /B python manage.py runserver 8002 > main.log 2>&1
+                    timeout 5
+                    echo Sistema principal iniciado.
                     """
                 }
             }
@@ -93,7 +101,9 @@ pipeline {
                     python -m venv venv
                     call venv\\Scripts\\activate
                     pip install -r requirements.txt
-                    start /B python manage.py runserver 8003
+                    start /B python manage.py runserver 8003 > cards.log 2>&1
+                    timeout 5
+                    echo Microserviço de cartões iniciado.
                     """
                 }
             }
@@ -105,7 +115,8 @@ pipeline {
                     bat """
                     echo Executando os testes E2E...
                     call ..\\venv\\Scripts\\activate
-                    pytest
+                    pytest > e2e_tests.log 2>&1
+                    echo Testes E2E concluídos.
                     """
                 }
             }
