@@ -13,6 +13,8 @@ pipeline {
 
     stages {
 
+        // Inicio dos Stages
+
         stage('Checkout') {
             steps {
                 dir("${WORKSPACE_DIR}") {
@@ -107,7 +109,38 @@ pipeline {
                 }
             }
         }
+
+        // Fim Carregamento dos Microserviços
+
+        stage('Health Check') {
+            steps {
+                bat """
+                curl -s http://localhost:5500 || echo "Frontend não está ativo"
+                curl -s http://localhost:8000 || echo "Microserviço de login não está ativo"
+                curl -s http://localhost:8001 || echo "Microserviço de envio de produtos não está ativo"
+                curl -s http://localhost:8002 || echo "Microserviço de armazenamento de produtos não está ativo"
+                curl -s http://localhost:8003 || echo "Microserviço de validação de cartões não está ativo"
+                """
+            }
+        }
+
+        stage('Testes Unitarios Backend'){
+            steps {
+                dir("${WORKSPACE_LOGIN}") {
+                    bat """
+                    echo Iniciando os testes unitários do microserviço de login...
+                    C:\\Users\\UkSam\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m venv venv
+                    call venv\\Scripts\\activate
+                    python manage.py test auth_service > unit_test.log 2>&1
+                    type unit_test.log
+                    """
+                }
+            }
+        }
+
     }
+
+    // Fim dos Stages
 
     post {
         always {
