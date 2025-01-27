@@ -53,8 +53,7 @@ pipeline {
                 dir("${WORKSPACE_LOGIN}") {
                     bat """
                     echo Configurando o microserviço de login...
-                    set PATH=C:\\Path\\To\\Python;%PATH%
-                    python -m venv venv
+                    C:\\Users\\UkSam\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m venv venv
                     call venv\\Scripts\\activate
                     pip install -r requirements.txt
                     start "ServidorLogin" cmd /c "python manage.py runserver 8000 > login.log 2>&1"
@@ -69,8 +68,7 @@ pipeline {
                 dir("${WORKSPACE_SEND}") {
                     bat """
                     echo Configurando o microserviço de envio de produtos...
-                    set PATH=C:\\Path\\To\\Python;%PATH%
-                    python -m venv venv
+                    C:\\Users\\UkSam\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m venv venv
                     call venv\\Scripts\\activate
                     pip install -r requirements.txt
                     start "ServidorSend" cmd /c "python manage.py runserver 8001 > sendproduct.log 2>&15"
@@ -85,8 +83,7 @@ pipeline {
                 dir("${WORKSPACE_MAIN}") {
                     bat """
                     echo Configurando o sistema de recebimento e armazenamento de produtos...
-                    set PATH=C:\\Path\\To\\Python;%PATH%
-                    python -m venv venv
+                    C:\\Users\\UkSam\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m venv venv
                     call venv\\Scripts\\activate
                     pip install -r requirements.txt
                     start "ServidorProdutos" cmd /c "python manage.py runserver 8002 > main.log 2>&1"
@@ -101,8 +98,7 @@ pipeline {
                 dir("${WORKSPACE_CARDS}") {
                     bat """
                     echo Configurando o microserviço de cartões...
-                    set PATH=C:\\Path\\To\\Python;%PATH%
-                    python -m venv venv
+                    C:\\Users\\UkSam\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m venv venv
                     call venv\\Scripts\\activate
                     pip install -r requirements.txt
                     start "ServidorCards" cmd /c "python manage.py runserver 8003 > cards.log 2>&1"
