@@ -11,21 +11,23 @@ pipeline {
         WORKSPACE_E2E = "${WORKSPACE_DIR}\\teste_e2e"
     }
 
-    stages {
         stage('Checkout') {
             steps {
                 dir("${WORKSPACE_DIR}") {
                     bat """
-                    echo Fazendo o checkout do código...
-
-                    echo Configurando diretório seguro para o Git...
-                    git config --global --add safe.directory ${WORKSPACE_DIR}
-
                     echo Limpando o diretório...
-                    for /D %%i in (*) do rmdir /S /Q "%%i"
-                    del /Q *.*
 
-                    echo Clonando o repositório...
+                    if exist "${WORKSPACE_DIR}" (
+                        rmdir /S /Q "${WORKSPACE_DIR}"
+                        echo Diretório removido. Aguardando para garantir exclusão...
+                        timeout 5
+                    )
+
+                    echo Recriando o diretório...
+                    mkdir "${WORKSPACE_DIR}"
+                    timeout 2
+
+                    echo Fazendo o checkout do código...
                     git clone https://github.com/Marcelo-Uk/ecommerce-devops-1.git .
                     """
                 }
