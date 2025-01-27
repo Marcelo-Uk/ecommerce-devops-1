@@ -43,7 +43,7 @@ pipeline {
                 dir("${WORKSPACE_FRONT}") {
                     bat """
                     echo Iniciando o servidor frontend...
-                    start "ServidorFrontend" cmd /c "python -m http.server 5500 > frontend.log 2>&1"
+                    start "ServidorFrontend" cmd /c "python -m http.server 5500 > frontend.log 2>&1" || exit /b 1
                     echo Servidor frontend iniciado.
                     """
                 }
@@ -58,8 +58,8 @@ pipeline {
                     C:\\Users\\UkSam\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m venv venv
                     call venv\\Scripts\\activate
                     pip install -r requirements.txt
-                    start "ServidorLogin" cmd /c "python manage.py runserver 8000 > login.log 2>&1"
-                    echo Microserviço de login iniciado.
+                    start "ServidorLogin" cmd /c "python manage.py runserver 8000 > login.log 2>&1" || exit /b 1
+                    curl -s http://127.0.0.1:8000 || echo "Microserviço de login não está respondendo"
                     """
                 }
             }
@@ -73,8 +73,8 @@ pipeline {
                     C:\\Users\\UkSam\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m venv venv
                     call venv\\Scripts\\activate
                     pip install -r requirements.txt
-                    start "ServidorSend" cmd /c "python manage.py runserver 8001 > sendproduct.log 2>&15"
-                    echo Microserviço de envio de produtos iniciado.
+                    start "ServidorSend" cmd /c "python manage.py runserver 8001 > sendproduct.log 2>&1" || exit /b 1
+                    curl -s http://127.0.0.1:8001 || echo "Microserviço de envio não está respondendo"
                     """
                 }
             }
@@ -88,8 +88,8 @@ pipeline {
                     C:\\Users\\UkSam\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m venv venv
                     call venv\\Scripts\\activate
                     pip install -r requirements.txt
-                    start "ServidorProdutos" cmd /c "python manage.py runserver 8002 > main.log 2>&1"
-                    echo Sistema principal iniciado.
+                    start "ServidorProdutos" cmd /c "python manage.py runserver 8002 > main.log 2>&1" || exit /b 1
+                    curl -s http://127.0.0.1:8002 || echo "Microserviço de recebimento de produtos não está respondendo"
                     """
                 }
             }
@@ -103,26 +103,14 @@ pipeline {
                     C:\\Users\\UkSam\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m venv venv
                     call venv\\Scripts\\activate
                     pip install -r requirements.txt
-                    start "ServidorCards" cmd /c "python manage.py runserver 8003 > cards.log 2>&1"
-                    echo Microserviço de cartões iniciado.
+                    start "ServidorCards" cmd /c "python manage.py runserver 8003 > cards.log 2>&1" || exit /b 1
+                    curl -s http://127.0.0.1:8003 || echo "Microserviço de valdação de cartões não está respondendo"
                     """
                 }
             }
         }
 
         // Fim Carregamento dos Microserviços
-
-        stage('Health Check') {
-            steps {
-                bat """
-                curl -s http://localhost:5500 || echo "Frontend não está ativo"
-                curl -s http://localhost:8000 || echo "Microserviço de login não está ativo"
-                curl -s http://localhost:8001 || echo "Microserviço de envio de produtos não está ativo"
-                curl -s http://localhost:8002 || echo "Microserviço de armazenamento de produtos não está ativo"
-                curl -s http://localhost:8003 || echo "Microserviço de validação de cartões não está ativo"
-                """
-            }
-        }
 
         stage('Testes Unitarios Backend'){
             steps {
@@ -131,8 +119,7 @@ pipeline {
                     echo Iniciando os testes unitários do microserviço de login...
                     C:\\Users\\UkSam\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m venv venv
                     call venv\\Scripts\\activate
-                    python manage.py test auth_service > unit_test.log 2>&1
-                    type unit_test.log
+                    python manage.py test auth_service > unit_test.log 2>&1 || exit /b 1
                     """
                 }
             }
@@ -145,8 +132,7 @@ pipeline {
                     echo Iniciando os testes unitários do microserviço de login...
                     C:\\Users\\UkSam\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m venv venv
                     call venv\\Scripts\\activate
-                    python manage.py test cards > cards.log 2>&1
-                    type cards.log
+                    python manage.py test cards > cards.log 2>&1 || exit /b 1
                     """
                 }
             }
@@ -159,8 +145,7 @@ pipeline {
                     echo Iniciando os testes unitários do microserviço de login...
                     C:\\Users\\UkSam\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m venv venv
                     call venv\\Scripts\\activate
-                    python manage.py test sendproduct > sendproduct.log 2>&1
-                    type sendproduct.log
+                    python manage.py test sendproduct > sendproduct.log 2>&1 || exit /b 1
                     """
                 }
             }
@@ -173,8 +158,7 @@ pipeline {
                     echo Iniciando os testes unitários do microserviço de login...
                     C:\\Users\\UkSam\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m venv venv
                     call venv\\Scripts\\activate
-                    python manage.py test produtos > produtos.log 2>&1
-                    type produtos.log
+                    python manage.py test produtos > produtos.log 2>&1 || exit /b 1
                     """
                 }
             }
@@ -191,7 +175,6 @@ pipeline {
                     npm test > frontend_test.log 2>&1
 
                     echo Exibindo o resultado dos testes...
-                    type frontend_test.log
                     """
                 }
             }
@@ -204,8 +187,7 @@ pipeline {
                     echo Iniciando os testes de integração dos produtos...
                     C:\\Users\\UkSam\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m venv venv
                     call venv\\Scripts\\activate
-                    pytest test_integration_sendprodutos.py > integra_prods.log 2>&1
-                    type integra_prods.log
+                    pytest test_integration_sendprodutos.py > integra_prods.log 2>&1 || exit /b 1
                     """
                 }
             }
