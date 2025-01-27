@@ -11,6 +11,8 @@ pipeline {
         WORKSPACE_E2E = "${WORKSPACE_DIR}\\teste_e2e"
     }
 
+    stages {
+
         stage('Checkout') {
             steps {
                 dir("${WORKSPACE_DIR}") {
@@ -123,7 +125,7 @@ pipeline {
                 }
             }
         }
-    
+    }
 
     post {
         always {
