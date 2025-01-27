@@ -96,30 +96,31 @@ pipeline {
                 }
             }
         }
-/*
-        stage('Run E2E Tests') {
-            steps {
-                dir("${WORKSPACE_E2E}") {
-                    sh """
-                    echo Executando os testes E2E...
-                    source ../venv/bin/activate
-                    pytest
-                    """
+        /*
+            stage('Run E2E Tests') {
+                steps {
+                    dir("${WORKSPACE_E2E}") {
+                        sh """
+                        echo Executando os testes E2E...
+                        source ../venv/bin/activate
+                        pytest
+                        """
+                    }
                 }
             }
         }
-    }
-*/
+        */
 
-    post {
-        always {
-            echo "Pipeline concluído."
+        post {
+            always {
+                echo "Pipeline concluído."
+            }
+            success {
+                echo "Pipeline finalizado com sucesso!"
+            }
+            failure {
+                echo "Pipeline falhou."
+            }
         }
-        success {
-            echo "Pipeline finalizado com sucesso!"
-        }
-        failure {
-            echo "Pipeline falhou."
-        }
-    }
+    }    
 }
