@@ -53,6 +53,7 @@ pipeline {
                 dir("${WORKSPACE_LOGIN}") {
                     bat """
                     echo Configurando o microserviço de login...
+                    set PATH=C:\\Path\\To\\Python;%PATH%
                     python -m venv venv
                     call venv\\Scripts\\activate
                     pip install -r requirements.txt
@@ -68,6 +69,7 @@ pipeline {
                 dir("${WORKSPACE_SEND}") {
                     bat """
                     echo Configurando o microserviço de envio de produtos...
+                    set PATH=C:\\Path\\To\\Python;%PATH%
                     python -m venv venv
                     call venv\\Scripts\\activate
                     pip install -r requirements.txt
@@ -83,6 +85,7 @@ pipeline {
                 dir("${WORKSPACE_MAIN}") {
                     bat """
                     echo Configurando o sistema de recebimento e armazenamento de produtos...
+                    set PATH=C:\\Path\\To\\Python;%PATH%
                     python -m venv venv
                     call venv\\Scripts\\activate
                     pip install -r requirements.txt
@@ -98,6 +101,7 @@ pipeline {
                 dir("${WORKSPACE_CARDS}") {
                     bat """
                     echo Configurando o microserviço de cartões...
+                    set PATH=C:\\Path\\To\\Python;%PATH%
                     python -m venv venv
                     call venv\\Scripts\\activate
                     pip install -r requirements.txt
