@@ -2,28 +2,28 @@ pipeline {
     agent any
 
     environment {
-        WORKSPACE_DIR = "/c/Uk/Dev/Faculdade/tac/ecommerce-devops-jenkins"
-        WORKSPACE_FRONT = "${WORKSPACE_DIR}/frontend"
-        WORKSPACE_LOGIN = "${WORKSPACE_DIR}/micro_login"
-        WORKSPACE_CARDS = "${WORKSPACE_DIR}/micro_pgt_cards"
-        WORKSPACE_SEND = "${WORKSPACE_DIR}/micro_sendproduto"
-        WORKSPACE_MAIN = "${WORKSPACE_DIR}/sistema-main"
-        WORKSPACE_E2E = "${WORKSPACE_DIR}/teste_e2e"
+        WORKSPACE_DIR = "C:\\Uk\\Dev\\Faculdade\\tac\\ecommerce-devops-jenkins"
+        WORKSPACE_FRONT = "${WORKSPACE_DIR}\\frontend"
+        WORKSPACE_LOGIN = "${WORKSPACE_DIR}\\micro_login"
+        WORKSPACE_CARDS = "${WORKSPACE_DIR}\\micro_pgt_cards"
+        WORKSPACE_SEND = "${WORKSPACE_DIR}\\micro_sendproduto"
+        WORKSPACE_MAIN = "${WORKSPACE_DIR}\\sistema-main"
+        WORKSPACE_E2E = "${WORKSPACE_DIR}\\teste_e2e"
     }
 
     stages {
         stage('Checkout') {
             steps {
                 dir("${WORKSPACE_DIR}") {
-                    sh """
+                    bat """
                     echo Fazendo o checkout do código...
-                    if [ -d .git ]; then
+                    if exist .git (
                         echo "Removendo arquivos antigos..."
                         git reset --hard
-                        git clean -fdx  # Remove arquivos não rastreados e diretórios extras
-                    else
-                        rm -rf ./* ./.git
-                    fi
+                        git clean -fdx
+                    ) else (
+                        rmdir /S /Q . 2>nul || echo "Nada para remover"
+                    )
                     git clone https://github.com/Marcelo-Uk/ecommerce-devops-1.git .
                     """
                 }
@@ -33,9 +33,9 @@ pipeline {
         stage('Setup Frontend') {
             steps {
                 dir("${WORKSPACE_FRONT}") {
-                    sh """
+                    bat """
                     echo Iniciando o servidor frontend...
-                    nohup python -m http.server 5500 &
+                    start /B python -m http.server 5500
                     """
                 }
             }
@@ -44,12 +44,12 @@ pipeline {
         stage('Setup Login Microservice') {
             steps {
                 dir("${WORKSPACE_LOGIN}") {
-                    sh """
+                    bat """
                     echo Configurando o microserviço de login...
                     python -m venv venv
-                    source venv/bin/activate
+                    call venv\\Scripts\\activate
                     pip install -r requirements.txt
-                    nohup python manage.py runserver 8000 &
+                    start /B python manage.py runserver 8000
                     """
                 }
             }
@@ -58,12 +58,12 @@ pipeline {
         stage('Setup SendProduct Microservice') {
             steps {
                 dir("${WORKSPACE_SEND}") {
-                    sh """
+                    bat """
                     echo Configurando o microserviço de envio de produtos...
                     python -m venv venv
-                    source venv/bin/activate
+                    call venv\\Scripts\\activate
                     pip install -r requirements.txt
-                    nohup python manage.py runserver 8001 &
+                    start /B python manage.py runserver 8001
                     """
                 }
             }
@@ -72,12 +72,12 @@ pipeline {
         stage('Setup Main Microservice') {
             steps {
                 dir("${WORKSPACE_MAIN}") {
-                    sh """
+                    bat """
                     echo Configurando o sistema de recebimento e armazenamento de produtos...
                     python -m venv venv
-                    source venv/bin/activate
+                    call venv\\Scripts\\activate
                     pip install -r requirements.txt
-                    nohup python manage.py runserver 8002 &
+                    start /B python manage.py runserver 8002
                     """
                 }
             }
@@ -86,41 +86,39 @@ pipeline {
         stage('Setup Cards Microservice') {
             steps {
                 dir("${WORKSPACE_CARDS}") {
-                    sh """
+                    bat """
                     echo Configurando o microserviço de cartões...
                     python -m venv venv
-                    source venv/bin/activate
+                    call venv\\Scripts\\activate
                     pip install -r requirements.txt
-                    nohup python manage.py runserver 8003 &
+                    start /B python manage.py runserver 8003
                     """
                 }
             }
         }
-        /*
-            stage('Run E2E Tests') {
-                steps {
-                    dir("${WORKSPACE_E2E}") {
-                        sh """
-                        echo Executando os testes E2E...
-                        source ../venv/bin/activate
-                        pytest
-                        """
-                    }
+
+        stage('Run E2E Tests') {
+            steps {
+                dir("${WORKSPACE_E2E}") {
+                    bat """
+                    echo Executando os testes E2E...
+                    call ..\\venv\\Scripts\\activate
+                    pytest
+                    """
                 }
             }
         }
-        */
     }
 
     post {
-            always {
-                echo "Pipeline concluído."
-            }
-            success {
-                echo "Pipeline finalizado com sucesso!"
-            }
-            failure {
-                echo "Pipeline falhou."
-            }
+        always {
+            echo "Pipeline concluído."
         }
+        success {
+            echo "Pipeline finalizado com sucesso!"
+        }
+        failure {
+            echo "Pipeline falhou."
+        }
+    }
 }
