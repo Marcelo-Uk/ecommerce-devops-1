@@ -110,8 +110,9 @@ pipeline {
             }
         }
         */
+    }
 
-        post {
+    post {
             always {
                 echo "Pipeline concluído."
             }
@@ -122,5 +123,4 @@ pipeline {
                 echo "Pipeline falhou."
             }
         }
-    }    
 }
