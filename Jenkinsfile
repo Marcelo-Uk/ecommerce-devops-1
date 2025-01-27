@@ -138,6 +138,79 @@ pipeline {
             }
         }
 
+        stage('Testes Unitarios Backend Cards'){
+            steps {
+                dir("${WORKSPACE_CARDS}") {
+                    bat """
+                    echo Iniciando os testes unitários do microserviço de login...
+                    C:\\Users\\UkSam\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m venv venv
+                    call venv\\Scripts\\activate
+                    python manage.py test cards > cards.log 2>&1
+                    type cards.log
+                    """
+                }
+            }
+        }
+
+        stage('Testes Unitarios Backend Envia Produto'){
+            steps {
+                dir("${WORKSPACE_SEND}") {
+                    bat """
+                    echo Iniciando os testes unitários do microserviço de login...
+                    C:\\Users\\UkSam\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m venv venv
+                    call venv\\Scripts\\activate
+                    python manage.py test sendproduct > sendproduct.log 2>&1
+                    type sendproduct.log
+                    """
+                }
+            }
+        }
+
+        stage('Testes Unitarios Backend Produtos'){
+            steps {
+                dir("${WORKSPACE_MAIN}") {
+                    bat """
+                    echo Iniciando os testes unitários do microserviço de login...
+                    C:\\Users\\UkSam\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m venv venv
+                    call venv\\Scripts\\activate
+                    python manage.py test produtos > produtos.log 2>&1
+                    type produtos.log
+                    """
+                }
+            }
+        }
+
+        stage('Testes Unitarios Frontend') {
+            steps {
+                dir("${WORKSPACE_FRONT}") {
+                    bat """
+                    echo Instalando dependências do frontend...
+                    npm install
+
+                    echo Executando testes unitários do frontend...
+                    npm test > frontend_test.log 2>&1
+
+                    echo Exibindo o resultado dos testes...
+                    type frontend_test.log
+                    """
+                }
+            }
+        }
+
+        stage('Testes Integração Backend Produtos => Envia | Recebe | Armazena'){
+            steps {
+                dir("${WORKSPACE_MAIN}") {
+                    bat """
+                    echo Iniciando os testes de integração dos produtos...
+                    C:\\Users\\UkSam\\AppData\\Local\\Programs\\Python\\Python313\\python.exe -m venv venv
+                    call venv\\Scripts\\activate
+                    pytest test_integration_sendprodutos.py > integra_prods.log 2>&1
+                    type integra_prods.log
+                    """
+                }
+            }
+        }
+
     }
 
     // Fim dos Stages
