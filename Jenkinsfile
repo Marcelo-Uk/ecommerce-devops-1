@@ -17,13 +17,15 @@ pipeline {
                 dir("${WORKSPACE_DIR}") {
                     bat """
                     echo Fazendo o checkout do código...
-                    if exist .git (
-                        echo "Removendo arquivos antigos..."
-                        git reset --hard
-                        git clean -fdx
-                    ) else (
-                        rmdir /S /Q . 2>nul || echo "Nada para remover"
-                    )
+
+                    echo Configurando diretório seguro para o Git...
+                    git config --global --add safe.directory ${WORKSPACE_DIR}
+
+                    echo Limpando o diretório...
+                    for /D %%i in (*) do rmdir /S /Q "%%i"
+                    del /Q *.*
+
+                    echo Clonando o repositório...
                     git clone https://github.com/Marcelo-Uk/ecommerce-devops-1.git .
                     """
                 }
