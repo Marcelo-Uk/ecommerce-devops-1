@@ -42,5 +42,10 @@ async function handleLogin(event) {
     }
 }
 
-// Adiciona o event listener ao formulário de login
-document.querySelector("#loginForm").addEventListener("submit", handleLogin);
+// Função para configurar o listener (encapsulada para uso em testes)
+export function setupLoginForm() {
+    const loginForm = document.querySelector("#loginForm");
+    if (loginForm) {
+        loginForm.addEventListener("submit", handleLogin);
+    }
+}

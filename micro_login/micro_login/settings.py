@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'micro_login', # Adiciona a aplicação principal
     'corsheaders',
     'rest_framework_simplejwt.token_blacklist',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

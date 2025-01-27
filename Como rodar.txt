@@ -10,4 +10,30 @@ Rodar o recebimento de produtos no servidor 8002 (sistema-main)
 	- Na pagina de admin, é possível ver os produtos no banco
 Rodar o sistema de validação de cartões no servidor 8003 (micro_pgt_cards)
 
+Com tudo rodando, os testes são executados:
+
+Rodar testes unitários de micro serviços (funções cruciais dentro de cada microserviço)
+	Os testes são escritos no arquivo tests.py e executados com o comando:
+		python manage.py test auth_service (login)
+		python manage.py test cards (micro_pgt_cards) - função validar_cartao
+		python manage.py test sendproduct (envio de produto)
+		python manage.py test produtos (sistema main)
+
+Rodar testes unitários do frontend (envio e recebimento de produtos)
+	Uso de NPM
+	Falar do arquivo package.json
+		Ele contém todas as informações sobre as dependências e scripts do frontend.
+		Dependências que você instala com npm install (como Jest e Babel) são registradas automaticamente no package.json.
+	Os testes são configurados dentro da pasta test (vários arquivos .test.js)
+	Ao rodar 'nmp test' todos esses arquivos serão testados
+	Para esse projeto, testamos envio e recebimento de produtos e carrinho.
+
+Rodar testes de integração no backend
+	Para esse projeto, testamos a integração entre o serviço de produtos (sistema-main), que possui o banco de dados e o serviço que envia os produtos para esse banco (send_produtos).
+	É criado um arquivo dentro do sistema_main (test_integration_sendprodutos.py)
+	O teste é executando rodando o comando: 'pytest test_integration_sendprodutos.py'
+
+Rodar testes End-to-End (E2E) usando Selenium
+	
+
 

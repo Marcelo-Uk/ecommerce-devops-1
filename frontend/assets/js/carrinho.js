@@ -16,7 +16,11 @@ function updateTotalPrice(cart) {
         return total + preco * item.quantidade;
     }, 0);
 
+    // Atualiza o elemento na página
     document.getElementById('total-price').textContent = `Total: R$ ${totalPrice.toFixed(2)}`;
+
+    // Salva o total no localStorage para ser usado na página de pagamento
+    localStorage.setItem('totalValue', totalPrice.toFixed(2));
 }
 
 // Renderizar os itens no carrinho
@@ -115,20 +119,5 @@ document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners(); // Adiciona os eventos ao carrinho
 });
 
-// Atualizar o total do carrinho
-function updateTotalPrice(cart) {
-    const totalPrice = cart.reduce((total, item) => {
-        const preco = parseFloat(item.preco); // Garante que o preço é numérico
-        if (isNaN(preco)) {
-            console.error(`Preço inválido encontrado para o item: ${item.titulo}`, item);
-            return total; // Ignora itens com preços inválidos
-        }
-        return total + preco * item.quantidade;
-    }, 0);
+export { renderCartItems };
 
-    // Atualiza o elemento na página
-    document.getElementById('total-price').textContent = `Total: R$ ${totalPrice.toFixed(2)}`;
-
-    // Salva o total no localStorage para ser usado na página de pagamento
-    localStorage.setItem('totalValue', totalPrice.toFixed(2));
-}

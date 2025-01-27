@@ -1,4 +1,4 @@
-async function fetchProdutos() {
+export async function fetchProdutos() {
     const apiURL = "http://127.0.0.1:8002/api/produtos/";
 
     try {
