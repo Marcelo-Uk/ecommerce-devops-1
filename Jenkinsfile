@@ -41,8 +41,7 @@ pipeline {
                 dir("${WORKSPACE_FRONT}") {
                     bat """
                     echo Iniciando o servidor frontend...
-                    start "ServidorFrontend" cmd /c "python -m http.server 5500 > frontend.log 2>&1"
-                    timeout 5
+                    start "ServidorFrontend" cmd /c "python -m http.server 5500 > frontend.log 2>&1 & timeout 5"
                     echo Servidor frontend iniciado.
                     """
                 }
@@ -57,8 +56,7 @@ pipeline {
                     python -m venv venv
                     call venv\\Scripts\\activate
                     pip install -r requirements.txt
-                    start "ServidorLogin" cmd /c python manage.py runserver 8000 > login.log 2>&1
-                    timeout 5
+                    start "ServidorLogin" cmd /c python manage.py runserver 8000 > login.log 2>&1 & timeout 5"
                     echo Microserviço de login iniciado.
                     """
                 }
@@ -73,8 +71,7 @@ pipeline {
                     python -m venv venv
                     call venv\\Scripts\\activate
                     pip install -r requirements.txt
-                    start "ServidorSend" cmd /c python manage.py runserver 8001 > sendproduct.log 2>&1
-                    timeout 5
+                    start "ServidorSend" cmd /c python manage.py runserver 8001 > sendproduct.log 2>&1  & timeout 5"
                     echo Microserviço de envio de produtos iniciado.
                     """
                 }
@@ -89,8 +86,7 @@ pipeline {
                     python -m venv venv
                     call venv\\Scripts\\activate
                     pip install -r requirements.txt
-                    start "ServidorProdutos" cmd /c python manage.py runserver 8002 > main.log 2>&1
-                    timeout 5
+                    start "ServidorProdutos" cmd /c python manage.py runserver 8002 > main.log 2>&1 & timeout 5"
                     echo Sistema principal iniciado.
                     """
                 }
@@ -105,8 +101,7 @@ pipeline {
                     python -m venv venv
                     call venv\\Scripts\\activate
                     pip install -r requirements.txt
-                    start "ServidorCards" cmd /c python manage.py runserver 8003 > cards.log 2>&1
-                    timeout 5
+                    start "ServidorCards" cmd /c python manage.py runserver 8003 > cards.log 2>&1 & timeout 5"
                     echo Microserviço de cartões iniciado.
                     """
                 }
