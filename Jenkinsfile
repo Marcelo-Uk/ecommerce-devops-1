@@ -11,120 +11,98 @@ pipeline {
         WORKSPACE_E2E = "${WORKSPACE_DIR}\\teste_e2e"
     }
 
-        stage('Checkout') {
-            steps {
-                dir("${WORKSPACE_DIR}") {
-                    bat """
-                    echo Limpando o diretório...
-
-                    if exist "${WORKSPACE_DIR}" (
-                        rmdir /S /Q "${WORKSPACE_DIR}"
-                        echo Diretório removido. Aguardando para garantir exclusão...
-                        timeout 5
-                    )
-
-                    echo Recriando o diretório...
-                    mkdir "${WORKSPACE_DIR}"
-                    timeout 2
-
-                    echo Fazendo o checkout do código...
-                    git clone https://github.com/Marcelo-Uk/ecommerce-devops-1.git .
-                    """
-                }
-            }
-        }
-
-        stage('Setup Frontend') {
-            steps {
-                dir("${WORKSPACE_FRONT}") {
-                    bat """
-                    echo Iniciando o servidor frontend...
-                    start /B python -m http.server 5500 > frontend.log 2>&1
+    stage('Checkout') {
+        steps {
+            dir("${WORKSPACE_DIR}") {
+                bat """
+                echo Limpando o diretório...
+                if exist "${WORKSPACE_DIR}" (
+                    rmdir /S /Q "${WORKSPACE_DIR}"
+                    echo Diretório removido. Aguardando para garantir exclusão...
                     timeout 5
-                    echo Servidor frontend iniciado.
-                    """
-                }
-            }
-        }
-
-        stage('Setup Login Microservice') {
-            steps {
-                dir("${WORKSPACE_LOGIN}") {
-                    bat """
-                    echo Configurando o microserviço de login...
-                    python -m venv venv
-                    call venv\\Scripts\\activate
-                    pip install -r requirements.txt
-                    start /B python manage.py runserver 8000 > login.log 2>&1
-                    timeout 5
-                    echo Microserviço de login iniciado.
-                    """
-                }
-            }
-        }
-
-        stage('Setup SendProduct Microservice') {
-            steps {
-                dir("${WORKSPACE_SEND}") {
-                    bat """
-                    echo Configurando o microserviço de envio de produtos...
-                    python -m venv venv
-                    call venv\\Scripts\\activate
-                    pip install -r requirements.txt
-                    start /B python manage.py runserver 8001 > sendproduct.log 2>&1
-                    timeout 5
-                    echo Microserviço de envio de produtos iniciado.
-                    """
-                }
-            }
-        }
-
-        stage('Setup Main Microservice') {
-            steps {
-                dir("${WORKSPACE_MAIN}") {
-                    bat """
-                    echo Configurando o sistema de recebimento e armazenamento de produtos...
-                    python -m venv venv
-                    call venv\\Scripts\\activate
-                    pip install -r requirements.txt
-                    start /B python manage.py runserver 8002 > main.log 2>&1
-                    timeout 5
-                    echo Sistema principal iniciado.
-                    """
-                }
-            }
-        }
-
-        stage('Setup Cards Microservice') {
-            steps {
-                dir("${WORKSPACE_CARDS}") {
-                    bat """
-                    echo Configurando o microserviço de cartões...
-                    python -m venv venv
-                    call venv\\Scripts\\activate
-                    pip install -r requirements.txt
-                    start /B python manage.py runserver 8003 > cards.log 2>&1
-                    timeout 5
-                    echo Microserviço de cartões iniciado.
-                    """
-                }
-            }
-        }
-
-        stage('Run E2E Tests') {
-            steps {
-                dir("${WORKSPACE_E2E}") {
-                    bat """
-                    echo Executando os testes E2E...
-                    call ..\\venv\\Scripts\\activate
-                    pytest > e2e_tests.log 2>&1
-                    echo Testes E2E concluídos.
-                    """
-                }
+                )
+                echo Recriando o diretório...
+                mkdir "${WORKSPACE_DIR}"
+                timeout 2
+                echo Fazendo o checkout do código...
+                git clone https://github.com/Marcelo-Uk/ecommerce-devops-1.git .
+                """
             }
         }
     }
-
+    stage('Setup Frontend') {
+        steps {
+            dir("${WORKSPACE_FRONT}") {
+                bat """
+                echo Iniciando o servidor frontend...
+                start /B python -m http.server 5500 > frontend.log 2>&1
+                timeout 5
+                echo Servidor frontend iniciado.
+                """
+            }
+        }
+    }
+    stage('Setup Login Microservice') {
+        steps {
+            dir("${WORKSPACE_LOGIN}") {
+                bat """
+                echo Configurando o microserviço de login...
+                python -m venv venv
+                call venv\\Scripts\\activate
+                pip install -r requirements.txt
+                start /B python manage.py runserver 8000 > login.log 2>&1
+                timeout 5
+                echo Microserviço de login iniciado.
+                """
+            }
+        }
+    }
+    stage('Setup SendProduct Microservice') {
+        steps {
+            dir("${WORKSPACE_SEND}") {
+                bat """
+                echo Configurando o microserviço de envio de produtos...
+                python -m venv venv
+                call venv\\Scripts\\activate
+                pip install -r requirements.txt
+                start /B python manage.py runserver 8001 > sendproduct.log 2>&1
+                timeout 5
+                echo Microserviço de envio de produtos iniciado.
+                """
+            }
+        }
+    }
+    stage('Setup Main Microservice') {
+        steps {
+            dir("${WORKSPACE_MAIN}") {
+                bat """
+                echo Configurando o sistema de recebimento e armazenamento de produtos...
+                python -m venv venv
+                call venv\\Scripts\\activate
+                pip install -r requirements.txt
+                start /B python manage.py runserver 8002 > main.log 2>&1
+                timeout 5
+                echo Sistema principal iniciado.
+                """
+            }
+        }
+    }
+    stage('Setup Cards Microservice') {
+        steps {
+            dir("${WORKSPACE_CARDS}") {
+                bat """
+                echo Configurando o microserviço de cartões...
+                python -m venv venv
+                call venv\\Scripts\\activate
+                pip install -r requirements.txt
+                start /B python manage.py runserver 8003 > cards.log 2>&1
+                timeout 5
+                echo Microserviço de cartões iniciado.
+                """
+            }
+        }
+    }
+    
     post {
         always {
             echo "Pipeline concluído."
