@@ -1,9 +1,8 @@
 pipeline {
     agent any
 
-    environment {
-        logs = '' // Inicializar variável de logs globalmente
-    }
+    // Variável global para armazenar logs
+    def logs = '' 
 
     stages {
         stage('Checkout') {
@@ -130,16 +129,18 @@ pipeline {
         }
         failure {
             echo "Pipeline falhou!"
-            emailext (
-                subject: "Pipeline Falhou: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                body: """
-                    O pipeline ${env.JOB_NAME} #${env.BUILD_NUMBER} falhou.
-                    Logs dos testes:
-                    ${logs}
-                    Veja os detalhes no Jenkins: ${env.BUILD_URL}
-                """,
-                to: 'mribeirocorp@gmail.com'
-            )
+            script {
+                emailext (
+                    subject: "Pipeline Falhou: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                    body: """
+                        O pipeline ${env.JOB_NAME} #${env.BUILD_NUMBER} falhou.
+                        Logs dos testes:
+                        ${logs}
+                        Veja os detalhes no Jenkins: ${env.BUILD_URL}
+                    """,
+                    to: 'mribeirocorp@gmail.com'
+                )
+            }
         }
     }
 }
