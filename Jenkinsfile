@@ -15,9 +15,16 @@ pipeline {
                     def logs = ''
 
                     try {
+                        logs += "=== Rodando testes para micro_login_container (auth_service) ===\n"
                         logs += bat(script: 'docker exec micro_login_container python manage.py test auth_service', returnStdout: true)
+
+                        logs += "=== Rodando testes para micro_pgt_cards_container (cards) ===\n"
                         logs += bat(script: 'docker exec micro_pgt_cards_container python manage.py test cards', returnStdout: true)
+
+                        logs += "=== Rodando testes para sistema_main_container (produtos) ===\n"
                         logs += bat(script: 'docker exec sistema_main_container python manage.py test produtos', returnStdout: true)
+
+                        logs += "=== Rodando testes para sendproduto_container (sendproduct) ===\n"
                         logs += bat(script: 'docker exec sendproduto_container python manage.py test sendproduct', returnStdout: true)
                     } catch (Exception e) {
                         // Se houver erro, salve os logs e continue
