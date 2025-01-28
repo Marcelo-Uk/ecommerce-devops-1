@@ -17,11 +17,15 @@ pipeline {
             steps {
                 echo "Limpando o ambiente: containers, imagens e redes antigas..."
                 script {
-                    // Remove todos os containers (parados ou em execução)
-                    bat 'docker rm -f $(docker ps -aq) || echo "Nenhum container para remover"'
+                    // Remove todos os containers
+                    bat '''
+                    for /f "tokens=*" %i in ('docker ps -aq') do docker rm -f %i || echo "Nenhum container para remover"
+                    '''
 
-                    // Remove todas as imagens sem tag ou antigas
-                    bat 'docker rmi -f $(docker images -aq) || echo "Nenhuma imagem para remover"'
+                    // Remove todas as imagens
+                    bat '''
+                    for /f "tokens=*" %i in ('docker images -aq') do docker rmi -f %i || echo "Nenhuma imagem para remover"
+                    '''
 
                     // Remove todas as redes customizadas
                     bat 'docker network prune -f || echo "Nenhuma rede para remover"'
@@ -89,6 +93,7 @@ pipeline {
         }
     }
 }
+
 
 /*
 pipeline {
