@@ -138,19 +138,19 @@ pipeline {
                 script {
                     withCredentials([usernamePassword(credentialsId: GITHUB_CREDENTIALS_ID, usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
                         echo 'Enviando os arquivos para o repositório de produção...'
-        
+
                         bat '''
                         REM Configurar nome e email do autor para o commit
-                        git config user.email "seu-email@example.com"
-                        git config user.name "Seu Nome"
-        
+                        git config user.email "mribeirocorp@gmail.com"
+                        git config user.name "Marcelo-Uk"
+
                         REM Verificar e criar o branch main, se necessário
                         git checkout -b main || git checkout main
-        
+
                         REM Adicionar arquivos e fazer commit
                         git add .
                         git commit -m "Atualizando produção via pipeline Jenkins" || echo "Nada para commitar, talvez sem alterações"
-        
+
                         REM Fazer o push para o repositório remoto
                         git push https://${GIT_USER}:${GIT_PASS}@github.com/Marcelo-Uk/devops-prod.git main || echo "Erro no push. Confirme se o branch main existe no repositório remoto."
                         '''
@@ -193,5 +193,5 @@ pipeline {
 
 
 
-//Marco Zero + Envio Prod - Teste 4
+//Marco Zero + Envio Prod - Teste 5
 //githubToken
