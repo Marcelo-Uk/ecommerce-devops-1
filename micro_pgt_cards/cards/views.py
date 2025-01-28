@@ -21,7 +21,7 @@ def validar_cartao(request):
             try:
                 cartao = Cartao.objects.get(numero_cartao=numero, nome_cartao=nome, data_validade=validade, cvv=cvv)
             except Cartao.DoesNotExist:
-                return JsonResponse({'status': 'erro', 'mensagem': 'Cartão inválido'}, status=200)
+                return JsonResponse({'status': 'erro', 'mensagem': 'Cartão inválido'}, status=200)  # Correto 404
 
             # Verifica o saldo
             if tipo_pagamento == 'debito':
@@ -30,17 +30,17 @@ def validar_cartao(request):
                     cartao.save()
                     return JsonResponse({'status': 'sucesso', 'mensagem': 'Pagamento aprovado no débito'})
                 else:
-                    return JsonResponse({'status': 'erro', 'mensagem': 'Saldo insuficiente no débito'}, status=400)
+                    return JsonResponse({'status': 'erro', 'mensagem': 'Saldo insuficiente no débito'}, status=200)  # Correto 400
             elif tipo_pagamento == 'credito':
                 if cartao.saldo_credito >= valor:
                     cartao.saldo_credito -= valor
                     cartao.save()
                     return JsonResponse({'status': 'sucesso', 'mensagem': 'Pagamento aprovado no crédito'})
                 else:
-                    return JsonResponse({'status': 'erro', 'mensagem': 'Saldo insuficiente no crédito'}, status=400)
+                    return JsonResponse({'status': 'erro', 'mensagem': 'Saldo insuficiente no crédito'}, status=200)  # Correto 400
             else:
-                return JsonResponse({'status': 'erro', 'mensagem': 'Tipo de pagamento inválido'}, status=400)
+                return JsonResponse({'status': 'erro', 'mensagem': 'Tipo de pagamento inválido'}, status=200)   # Correto 400
 
         except Exception as e:
-            return JsonResponse({'status': 'erro', 'mensagem': str(e)}, status=500)
-    return JsonResponse({'status': 'erro', 'mensagem': 'Método não permitido'}, status=405)
+            return JsonResponse({'status': 'erro', 'mensagem': str(e)}, status=200)   # Correto 500
+    return JsonResponse({'status': 'erro', 'mensagem': 'Método não permitido'}, status=200)   # Correto 405
