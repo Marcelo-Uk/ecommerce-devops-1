@@ -20,7 +20,6 @@ pipeline {
             }
         }
 
-        /*
         stage('Testes Unitários') {
             steps {
                 bat 'docker exec micro_login_container python manage.py test auth_service'
@@ -35,7 +34,7 @@ pipeline {
                 bat 'docker exec sendoproduto_container pytest test_integration_sendprodutos.py'
             }
         }
-        */
+        
     }
     post {
         success {
