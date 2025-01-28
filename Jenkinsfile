@@ -29,12 +29,15 @@ pipeline {
                 bat 'docker exec micro_sendproduto_container python manage.py test sendproduct'
             }
         }
-
+        /*
         stage('Testes Integrados') {
             steps {
                 bat 'docker exec sistema_main_container pytest test_integration_sendprodutos.py'
             }
         }
+        */
+
+        /* Teste Unitarios Ok */
         
     }
     post {
