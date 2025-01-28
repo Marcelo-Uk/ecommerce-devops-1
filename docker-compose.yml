@@ -2,6 +2,7 @@ services:
   # Serviço do Frontend
   frontend:
     image: frontend_image
+    pull_policy: never
     container_name: frontend_container
     ports:
       - "5500:5500"
@@ -11,6 +12,7 @@ services:
   # Serviço de Login
   micro_login:
     image: micro_login_image
+    pull_policy: never
     container_name: micro_login_container
     ports:
       - "8000:8000"
@@ -20,6 +22,7 @@ services:
   # Serviço de Envio de Produtos
   micro_sendproduto:
     image: sendproduto_image
+    pull_policy: never
     container_name: micro_sendproduto_container
     ports:
       - "8001:8001"
@@ -29,6 +32,7 @@ services:
   # Serviço de Recebimento de Produtos
   sistema_main:
     image: sistema_main_image
+    pull_policy: never
     container_name: sistema_main_container
     ports:
       - "8002:8002"
@@ -38,6 +42,7 @@ services:
   # Serviço de Validação de Cartões
   micro_pgt_cards:
     image: micro_pgt_cards_image
+    pull_policy: never
     container_name: micro_pgt_cards_container
     ports:
       - "8003:8003"
