@@ -9,34 +9,6 @@ pipeline {
             }
         }
 
-        stage('Limpar Ambiente') {
-            steps {
-                script {
-                    echo "Removendo todos os containers, imagens e redes..."
-        
-                    // Parar todos os containers
-                    bat """
-                    for /F "tokens=*" %%i in ('docker ps -q') do docker stop %%i || echo Nenhum container ativo para parar
-                    """
-        
-                    // Remover todos os containers
-                    bat """
-                    for /F "tokens=*" %%i in ('docker ps -aq') do docker rm %%i || echo Nenhum container para remover
-                    """
-        
-                    // Remover todas as imagens
-                    bat """
-                    for /F "tokens=*" %%i in ('docker images -q') do docker rmi -f %%i || echo Nenhuma imagem para remover
-                    """
-        
-                    // Remover redes não utilizadas
-                    bat 'docker network prune -f || echo Nenhuma rede para remover'
-                }
-            }
-        }
-
-
-
         stage('Build Frontend') {
             steps {
                 dir('frontend') {
