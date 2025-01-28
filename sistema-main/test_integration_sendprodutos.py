@@ -2,9 +2,9 @@ import pytest
 import requests
 
 # URL dos microserviços
-SEND_PRODUTOS_URL = "http://127.0.0.1:8001/api/send-product/"
-RECEBER_PRODUTOS_URL = "http://127.0.0.1:8002/api/receber-produtos/"
-LISTAR_PRODUTOS_URL = "http://127.0.0.1:8002/api/produtos/"
+SEND_PRODUTOS_URL = "http://micro_sendproduto:8001/api/send-product/"
+RECEBER_PRODUTOS_URL = "http://sistema_main:8002/api/receber-produtos/"
+LISTAR_PRODUTOS_URL = "http://sistema_main:8002/api/produtos/"
 
 @pytest.fixture
 def produto_valido():
