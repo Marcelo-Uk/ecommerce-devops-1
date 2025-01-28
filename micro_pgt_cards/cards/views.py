@@ -21,7 +21,7 @@ def validar_cartao(request):
             try:
                 cartao = Cartao.objects.get(numero_cartao=numero, nome_cartao=nome, data_validade=validade, cvv=cvv)
             except Cartao.DoesNotExist:
-                return JsonResponse({'status': 'erro', 'mensagem': 'Cartão inválido'}, status=404)
+                return JsonResponse({'status': 'erro', 'mensagem': 'Cartão inválido'}, status=200)
 
             # Verifica o saldo
             if tipo_pagamento == 'debito':
