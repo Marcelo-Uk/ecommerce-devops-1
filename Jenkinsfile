@@ -16,13 +16,15 @@ pipeline {
         stage('Limpar Ambiente') {
             steps {
                 script {
-                    echo "Removendo todos os containers, imagens e redes..."
-
+                    echo "Removendo todos os containers, imagens, redes e volumes..."
                     try {
-                        bat 'docker ps -q | for /f "tokens=*" %i in (\'docker ps -q\') do docker stop %i || echo "Nenhum container ativo para parar"'
-                        bat 'docker ps -aq | for /f "tokens=*" %i in (\'docker ps -aq\') do docker rm %i || echo "Nenhum container para remover"'
-                        bat 'docker images -q | for /f "tokens=*" %i in (\'docker images -q\') do docker rmi -f %i || echo "Nenhuma imagem para remover"'
-                        bat 'docker network prune -f || echo "Nenhuma rede para remover"'
+                        bat '''
+                            docker stop $(docker ps -q) || echo "Nenhum container ativo para parar"
+                            docker rm $(docker ps -aq) || echo "Nenhum container para remover"
+                            docker rmi $(docker images -q) --force || echo "Nenhuma imagem para remover"
+                            docker network prune -f || echo "Nenhuma rede para remover"
+                            docker volume prune -f || echo "Nenhum volume para remover"
+                        '''
                     } catch (Exception e) {
                         echo "Erro ao limpar o ambiente: ${e}"
                     }
