@@ -4,6 +4,8 @@ pipeline {
     // Variável "logs" definida no environment para ser acessível globalmente
     environment {
         logs = ''
+        GITHUB_CREDENTIALS_ID = 'githubKey' // Substitua pelo ID da credencial que você configurou
+        GITHUB_REPO_URL = 'git@github.com:Marcelo-Uk/devops-prod.git' // URL SSH do repositório de destino
     }
 
     stages {
@@ -128,6 +130,37 @@ pipeline {
                 }
             }
         }
+
+        stage('Upload para Repositório de Produção') {
+            steps {
+                script {
+                    // Clonar o repositório de destino
+                    echo "Clonando o repositório de destino..."
+                    bat '''
+                    if exist devops-prod (rmdir /s /q devops-prod)
+                    git clone %GITHUB_REPO_URL% devops-prod
+                    '''
+
+                    // Copiar os arquivos do workspace para o repositório clonado
+                    echo "Copiando arquivos para o repositório de destino..."
+                    bat '''
+                    xcopy * devops-prod /e /y /q
+                    '''
+
+                    // Realizar commit e push
+                    dir('devops-prod') {
+                        echo "Commitando e enviando os arquivos..."
+                        bat '''
+                        git add .
+                        git commit -m "Atualização do código pela pipeline Jenkins"
+                        git push origin main
+                        '''
+                    }
+                }
+            }
+        }
+
+
     }
 
     post {
