@@ -8,19 +8,6 @@ pipeline {
             }
         }
 
-        stage('Build Docker Images') {
-            steps {
-                bat 'docker-compose down'
-                bat 'docker-compose build'
-            }
-        }
-
-        stage('Subir Containers') {
-            steps {
-                bat 'docker-compose up -d'
-            }
-        }
-
         stage('Testes Unitários') {
             steps {
                 bat 'docker exec micro_login_container python manage.py test auth_service'
