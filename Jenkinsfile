@@ -9,14 +9,11 @@ pipeline {
         }
 
         stage('Build Docker Images') {
-           steps {
-               bat '''
-               for /f "tokens=*" %%i in ('docker ps -aq --filter name=micro_') do docker rm -f %%i
-               '''
-               bat 'docker-compose down --remove-orphans'
-               bat 'docker-compose build'
-           }
-}       
+            steps {
+                bat 'docker-compose down'
+                bat 'docker-compose build'
+            }
+        }
 
         stage('Subir Containers') {
             steps {
