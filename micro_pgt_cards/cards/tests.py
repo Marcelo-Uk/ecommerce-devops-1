@@ -72,7 +72,7 @@ class ValidarCartaoTests(TestCase):
             "valor": "50.00"
         }, content_type='application/json')
         
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)  # Alterado para 200 para forçar falha. Valor correto: 404
         self.assertEqual(response.json()['status'], 'erro')
         self.assertEqual(response.json()['mensagem'], 'Cartão inválido')
 
