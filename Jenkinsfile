@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        logs = '' // Variável global para armazenar logs
+        logs = '' // Inicializar variável de logs globalmente
     }
 
     stages {
@@ -18,23 +18,14 @@ pipeline {
                 script {
                     echo "Removendo todos os containers, imagens e redes..."
 
-                    // Parar todos os containers
-                    bat '''
-                    for /F "tokens=*" %%i in ('docker ps -q') do docker stop %%i
-                    '''
-
-                    // Remover todos os containers
-                    bat '''
-                    for /F "tokens=*" %%i in ('docker ps -aq') do docker rm %%i
-                    '''
-
-                    // Remover todas as imagens
-                    bat '''
-                    for /F "tokens=*" %%i in ('docker images -q') do docker rmi -f %%i
-                    '''
-
-                    // Remover redes não utilizadas
-                    bat 'docker network prune -f'
+                    try {
+                        bat 'docker ps -q | for /f "tokens=*" %i in (\'docker ps -q\') do docker stop %i || echo "Nenhum container ativo para parar"'
+                        bat 'docker ps -aq | for /f "tokens=*" %i in (\'docker ps -aq\') do docker rm %i || echo "Nenhum container para remover"'
+                        bat 'docker images -q | for /f "tokens=*" %i in (\'docker images -q\') do docker rmi -f %i || echo "Nenhuma imagem para remover"'
+                        bat 'docker network prune -f || echo "Nenhuma rede para remover"'
+                    } catch (Exception e) {
+                        echo "Erro ao limpar o ambiente: ${e}"
+                    }
                 }
             }
         }
