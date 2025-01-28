@@ -19,12 +19,12 @@ pipeline {
                 script {
                     // Remove todos os containers
                     bat '''
-                    for /f "tokens=*" %%i in ('docker ps -aq') do docker rm -f %%i || echo "Nenhum container para remover"
+                    for /F "tokens=*" %%i in ('docker ps -aq') do (docker rm -f %%i || echo "Falha ao remover container %%i")
                     '''
 
                     // Remove todas as imagens
                     bat '''
-                    for /f "tokens=*" %%i in ('docker images -aq') do docker rmi -f %%i || echo "Nenhuma imagem para remover"
+                    for /F "tokens=*" %%i in ('docker images -aq') do (docker rmi -f %%i || echo "Falha ao remover imagem %%i")
                     '''
 
                     // Remove todas as redes customizadas
@@ -93,6 +93,7 @@ pipeline {
         }
     }
 }
+
 
 
 
