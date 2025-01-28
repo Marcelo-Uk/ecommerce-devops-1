@@ -1,10 +1,21 @@
 pipeline {
     agent any
 
-    // Variável global para armazenar logs
-    def logs = '' 
+    // Variável "logs" definida no environment para ser acessível globalmente
+    environment {
+        logs = ''
+    }
 
     stages {
+        stage('Inicializar Variáveis') {
+            steps {
+                script {
+                    // Inicialize a variável logs como string vazia para evitar erros
+                    logs = ''
+                }
+            }
+        }
+
         stage('Checkout') {
             steps {
                 echo "Clonando o repositório do GitHub..."
