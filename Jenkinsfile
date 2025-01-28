@@ -19,20 +19,12 @@ pipeline {
                 script {
                     // Remove todos os containers
                     bat '''
-                    if not "%DOCKER_CONTAINERS%"=="" (
-                        for /F "tokens=*" %%i in ('docker ps -aq') do (docker rm -f %%i || echo "Falha ao remover container %%i")
-                    ) else (
-                        echo "Nenhum container para remover"
-                    )
+                    for /F "tokens=*" %%i in ('docker ps -aq') do (docker rm -f %%i || echo "Falha ao remover container %%i")
                     '''
 
                     // Remove todas as imagens
                     bat '''
-                    if not "%DOCKER_IMAGES%"=="" (
-                        for /F "tokens=*" %%i in ('docker images -aq') do (docker rmi -f %%i || echo "Falha ao remover imagem %%i")
-                    ) else (
-                        echo "Nenhuma imagem para remover"
-                    )
+                    for /F "tokens=*" %%i in ('docker images -aq') do (docker rmi -f %%i || echo "Falha ao remover imagem %%i")
                     '''
 
                     // Remove todas as redes customizadas
@@ -104,19 +96,15 @@ pipeline {
             steps {
                 script {
                     try {
-                        echo "=== Rodando testes para micro_login_container (auth_service) ==="
                         logs += "=== Rodando testes para micro_login_container (auth_service) ===\n"
                         logs += bat(script: 'docker exec micro_login_container python manage.py test', returnStdout: true)
 
-                        echo "=== Rodando testes para micro_pgt_cards_container (cards) ==="
                         logs += "=== Rodando testes para micro_pgt_cards_container (cards) ===\n"
                         logs += bat(script: 'docker exec micro_pgt_cards_container python manage.py test', returnStdout: true)
 
-                        echo "=== Rodando testes para sistema_main_container (produtos) ==="
                         logs += "=== Rodando testes para sistema_main_container (produtos) ===\n"
                         logs += bat(script: 'docker exec sistema_main_container python manage.py test', returnStdout: true)
 
-                        echo "=== Rodando testes para sendproduto_container (sendproduct) ==="
                         logs += "=== Rodando testes para sendproduto_container (sendproduct) ===\n"
                         logs += bat(script: 'docker exec sendproduto_container python manage.py test', returnStdout: true)
                     } catch (Exception e) {
@@ -154,6 +142,4 @@ pipeline {
             )
         }
     }
-
-    
 }
