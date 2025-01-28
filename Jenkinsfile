@@ -153,21 +153,24 @@ pipeline {
                         cd devops-prod
 
                         REM Configurar nome e email do autor
-                        git config user.email "mribeirocorp@gmail.com"
-                        git config user.name "Marcelo-Uk"
+                        git config user.email "seu-email@example.com"
+                        git config user.name "Seu Nome"
 
-                        REM Adicionar arquivos, criar branch main e fazer commit
+                        REM Verificar e criar o branch main, se necessário
+                        git checkout -b main || git checkout main
+
+                        REM Adicionar arquivos e fazer commit
                         git add .
                         git commit -m "Atualizando produção via pipeline Jenkins" || echo "Nada para commitar, talvez sem alterações"
-                        git branch -M main
 
                         REM Fazer o push para o repositório remoto
-                        git push origin main || echo "Erro no push. Confirme se o branch main existe no repositório remoto."
+                        git push -u origin main || echo "Erro no push. Confirme se o branch main existe no repositório remoto."
                         '''
                     }
                 }
             }
         }
+
     }
 
     post {
@@ -202,5 +205,5 @@ pipeline {
 
 
 
-//Marco Zero + Envio Prod - Teste 3
+//Marco Zero + Envio Prod - Teste 4
 //githubToken
