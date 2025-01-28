@@ -16,17 +16,17 @@ pipeline {
         
                     // Parar todos os containers
                     bat """
-                    for /f "tokens=*" %i in ('docker ps -q') do docker stop %i || echo "Nenhum container ativo para parar"
+                    for /f "tokens=*" %%i in ('docker ps -q') do docker stop %%i || echo "Nenhum container ativo para parar"
                     """
         
                     // Remover todos os containers
                     bat """
-                    for /f "tokens=*" %i in ('docker ps -aq') do docker rm %i || echo "Nenhum container para remover"
+                    for /f "tokens=*" %%i in ('docker ps -aq') do docker rm %%i || echo "Nenhum container para remover"
                     """
         
                     // Remover todas as imagens
                     bat """
-                    for /f "tokens=*" %i in ('docker images -q') do docker rmi -f %i || echo "Nenhuma imagem para remover"
+                    for /f "tokens=*" %%i in ('docker images -q') do docker rmi -f %%i || echo "Nenhuma imagem para remover"
                     """
         
                     // Remover todas as redes desnecessárias
