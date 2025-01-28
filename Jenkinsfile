@@ -1,19 +1,17 @@
 pipeline {
     agent any
 
-    // Variável "logs" definida no environment para ser acessível globalmente
     environment {
-        logs = '' // Variável global para armazenar logs
-        GITHUB_REPO_URL = 'https://github.com/Marcelo-Uk/devops-prod.git' // Repositório de destino
-        GITHUB_CREDENTIALS_ID = 'githubToken' // Substitua pelo ID da credencial que você configurou no Jenkins
+        logs = '' // Variável global para logs
+        GITHUB_REPO_URL = 'https://github.com/Marcelo-Uk/devops-prod.git' // Repositório de produção
+        GITHUB_CREDENTIALS_ID = 'github-pat-credential' // Substitua pelo ID da credencial no Jenkins
     }
 
     stages {
         stage('Inicializar Variáveis') {
             steps {
                 script {
-                    // Inicialize a variável logs como string vazia para evitar erros
-                    logs = ''
+                    logs = '' // Inicializando variável de logs
                 }
             }
         }
@@ -29,17 +27,12 @@ pipeline {
             steps {
                 echo "Limpando o ambiente: containers, imagens e redes antigas..."
                 script {
-                    // Remove todos os containers
                     bat '''
                     for /F "tokens=*" %%i in ('docker ps -aq') do (docker rm -f %%i || echo "Falha ao remover container %%i")
                     '''
-
-                    // Remove todas as imagens
                     bat '''
                     for /F "tokens=*" %%i in ('docker images -aq') do (docker rmi -f %%i || echo "Falha ao remover imagem %%i")
                     '''
-
-                    // Remove todas as redes customizadas
                     bat 'docker network prune -f || echo "Nenhuma rede para remover"'
                 }
             }
@@ -108,20 +101,13 @@ pipeline {
             steps {
                 script {
                     try {
-                        echo "=== Rodando testes para micro_login_container (auth_service) ==="
-                        logs += "=== Rodando testes para micro_login_container (auth_service) ===\n"
+                        echo "=== Rodando testes para micro_login_container ==="
                         logs += bat(script: 'docker exec micro_login_container python manage.py test', returnStdout: true)
-
-                        echo "=== Rodando testes para micro_pgt_cards_container (cards) ==="
-                        logs += "=== Rodando testes para micro_pgt_cards_container (cards) ===\n"
+                        echo "=== Rodando testes para micro_pgt_cards_container ==="
                         logs += bat(script: 'docker exec micro_pgt_cards_container python manage.py test', returnStdout: true)
-
-                        echo "=== Rodando testes para sistema_main_container (produtos) ==="
-                        logs += "=== Rodando testes para sistema_main_container (produtos) ===\n"
+                        echo "=== Rodando testes para sistema_main_container ==="
                         logs += bat(script: 'docker exec sistema_main_container python manage.py test', returnStdout: true)
-
-                        echo "=== Rodando testes para sendproduto_container (sendproduct) ==="
-                        logs += "=== Rodando testes para sendproduto_container (sendproduct) ===\n"
+                        echo "=== Rodando testes para sendproduto_container ==="
                         logs += bat(script: 'docker exec sendproduto_container python manage.py test', returnStdout: true)
                     } catch (Exception e) {
                         currentBuild.result = 'FAILURE'
@@ -136,30 +122,32 @@ pipeline {
                 script {
                     echo "Enviando os arquivos para o repositório de produção..."
 
-                    // Clona o repositório de produção usando as credenciais configuradas
+                    // Bloco seguro para autenticação
                     withCredentials([usernamePassword(credentialsId: "${GITHUB_CREDENTIALS_ID}", usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                        // Formatar username para evitar problemas com caracteres especiais
+                        def escapedUser = URLEncoder.encode(GIT_USER, "UTF-8")
+
+                        // Clonar o repositório
                         bat """
                         if exist devops-prod (rmdir /s /q devops-prod)
-                        git clone https://${GIT_USER}:${GIT_PASS}@github.com/Marcelo-Uk/devops-prod.git devops-prod
+                        git clone https://${escapedUser}:${GIT_PASS}@github.com/Marcelo-Uk/devops-prod.git devops-prod
                         """
 
-                        // Copia os arquivos do workspace para o repositório clonado
+                        // Copiar arquivos para o repositório
                         bat 'xcopy /E /Y /I * devops-prod\\'
 
                         dir('devops-prod') {
-                            // Adiciona, faz commit e push dos arquivos
-                            bat """
+                            // Adicionar e enviar os arquivos
+                            bat '''
                             git add .
                             git commit -m "Deploy automático via Jenkins: ${env.BUILD_NUMBER}"
-                            git push https://${GIT_USER}:${GIT_PASS}@github.com/Marcelo-Uk/devops-prod.git
-                            """
+                            git push https://${escapedUser}:${GIT_PASS}@github.com/Marcelo-Uk/devops-prod.git
+                            '''
                         }
                     }
                 }
             }
         }
-
-
     }
 
     post {
@@ -176,18 +164,16 @@ pipeline {
         }
         failure {
             echo "Pipeline falhou!"
-            script {
-                emailext (
-                    subject: "Pipeline Falhou: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                    body: """
-                        O pipeline ${env.JOB_NAME} #${env.BUILD_NUMBER} falhou.
-                        Logs dos testes:
-                        ${logs}
-                        Veja os detalhes no Jenkins: ${env.BUILD_URL}
-                    """,
-                    to: 'mribeirocorp@gmail.com'
-                )
-            }
+            emailext (
+                subject: "Pipeline Falhou: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: """
+                    O pipeline ${env.JOB_NAME} #${env.BUILD_NUMBER} falhou.
+                    Logs dos testes:
+                    ${logs}
+                    Veja os detalhes no Jenkins: ${env.BUILD_URL}
+                """,
+                to: 'mribeirocorp@gmail.com'
+            )
         }
     }
 }
