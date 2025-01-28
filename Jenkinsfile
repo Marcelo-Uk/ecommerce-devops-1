@@ -4,7 +4,7 @@ pipeline {
     environment {
         logs = '' // Variável global para logs
         GITHUB_REPO_URL = 'https://github.com/Marcelo-Uk/devops-prod.git' // Repositório de produção
-        GITHUB_CREDENTIALS_ID = 'github-pat-credential' // Substitua pelo ID da credencial no Jenkins
+        GITHUB_CREDENTIALS_ID = 'githubToken' // Substitua pelo ID da credencial no Jenkins
     }
 
     stages {
