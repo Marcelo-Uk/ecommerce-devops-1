@@ -17,17 +17,13 @@ pipeline {
             steps {
                 script {
                     echo "Removendo todos os containers, imagens, redes e volumes..."
-                    try {
-                        bat '''
-                            for /f "tokens=*" %i in ('docker ps -q') do docker stop %i
-                            for /f "tokens=*" %i in ('docker ps -aq') do docker rm %i
-                            for /f "tokens=*" %i in ('docker images -q') do docker rmi -f %i
-                            docker network prune -f
-                            docker volume prune -f
-                        '''
-                    } catch (Exception e) {
-                        echo "Erro ao limpar o ambiente: ${e}"
-                    }
+                    bat '''
+                        for /f "tokens=*" %i in ('docker ps -q') do @docker stop %i
+                        for /f "tokens=*" %i in ('docker ps -aq') do @docker rm %i
+                        for /f "tokens=*" %i in ('docker images -q') do @docker rmi -f %i
+                        docker network prune -f
+                        docker volume prune -f
+                    '''
                 }
             }
         }
@@ -61,7 +57,7 @@ pipeline {
 
         stage('Build Sistema Main') {
             steps {
-                dir('sistema_main') {
+                dir('sistema-main') {
                     echo "Construindo imagem do sistema_main..."
                     bat 'docker build -t sistema_main_image .'
                 }
