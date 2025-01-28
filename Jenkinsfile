@@ -17,19 +17,19 @@ pipeline {
                     try {
                         echo "=== Rodando testes para micro_login_container (auth_service) ==="
                         logs += "=== Rodando testes para micro_login_container (auth_service) ===\n"
-                        logs += bat(script: 'docker exec micro_login_container python manage.py test auth_service', returnStdout: true)
+                        logs += bat(script: 'docker exec micro_login_container python manage.py test', returnStdout: true)
 
                         echo "=== Rodando testes para micro_pgt_cards_container (cards) ==="
                         logs += "=== Rodando testes para micro_pgt_cards_container (cards) ===\n"
-                        logs += bat(script: 'docker exec micro_pgt_cards_container python manage.py test cards', returnStdout: true)
+                        logs += bat(script: 'docker exec micro_pgt_cards_container python manage.py test', returnStdout: true)
 
                         echo "=== Rodando testes para sistema_main_container (produtos) ==="
                         logs += "=== Rodando testes para sistema_main_container (produtos) ===\n"
-                        logs += bat(script: 'docker exec sistema_main_container python manage.py test produtos', returnStdout: true)
+                        logs += bat(script: 'docker exec sistema_main_container python manage.py test', returnStdout: true)
 
                         echo "=== Rodando testes para sendproduto_container (sendproduct) ==="
                         logs += "=== Rodando testes para sendproduto_container (sendproduct) ===\n"
-                        logs += bat(script: 'docker exec sendproduto_container python manage.py test sendproduct', returnStdout: true)
+                        logs += bat(script: 'docker exec sendproduto_container python manage.py test', returnStdout: true)
                     } catch (Exception e) {
                         // Se houver erro, salve os logs e continue
                         currentBuild.result = 'FAILURE'
