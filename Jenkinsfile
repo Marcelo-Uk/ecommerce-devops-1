@@ -21,6 +21,8 @@ pipeline {
                     bat """
                     echo Limpando o diretório...
 
+                    taskkill /F /IM python.exe || echo "Nenhum processo Python ativo"
+
                     if exist "${WORKSPACE_DIR}" (
                         rmdir /S /Q "${WORKSPACE_DIR}"
                         echo Diretório removido. Aguardando para garantir exclusão...
