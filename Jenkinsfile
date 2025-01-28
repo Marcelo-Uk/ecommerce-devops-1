@@ -25,20 +25,27 @@ pipeline {
 
         stage('Limpar Ambiente') {
             steps {
-                echo "Limpando o ambiente: containers, imagens e redes antigas..."
                 script {
-                    // Remove todos os containers
-                    bat '''
-                    for /F "tokens=*" %%i in ('docker ps -aq') do (docker rm -f %%i || echo "Falha ao remover container %%i")
-                    '''
-
-                    // Remove todas as imagens
-                    bat '''
-                    for /F "tokens=*" %%i in ('docker images -aq') do (docker rmi -f %%i || echo "Falha ao remover imagem %%i")
-                    '''
-
-                    // Remove todas as redes customizadas
-                    bat 'docker network prune -f || echo "Nenhuma rede para remover"'
+                    catchError(buildResult: 'UNSTABLE', stageResult: 'UNSTABLE') {
+                        echo "Limpando o ambiente: containers, imagens e redes antigas..."
+                        bat '''
+                        set CONTAINERS=$(docker ps -aq)
+                        if not "%CONTAINERS%"=="" (
+                            for /F "tokens=*" %%i in ('docker ps -aq') do (docker rm -f %%i || echo "Falha ao remover container %%i")
+                        ) else (
+                            echo "Nenhum container para remover"
+                        )
+                        '''
+                        bat '''
+                        set IMAGES=$(docker images -aq)
+                        if not "%IMAGES%"=="" (
+                            for /F "tokens=*" %%i in ('docker images -aq') do (docker rmi -f %%i || echo "Falha ao remover imagem %%i")
+                        ) else (
+                            echo "Nenhuma imagem para remover"
+                        )
+                        '''
+                        bat 'docker network prune -f || echo "Nenhuma rede para remover"'
+                    }
                 }
             }
         }
