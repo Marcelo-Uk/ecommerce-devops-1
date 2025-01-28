@@ -143,11 +143,14 @@ pipeline {
                         if exist devops-prod (rmdir /s /q devops-prod)
                         git clone https://${GIT_USER}:${GIT_PASS}@github.com/Marcelo-Uk/devops-prod.git devops-prod
                         echo devops-prod\\ > exclude.txt
-                        xcopy /E /Y /I . devops-prod\\ /EXCLUDE:exclude.txt
+                        xcopy /E /Y /I . devops-prod /EXCLUDE:exclude.txt
                         cd devops-prod
+                        git config user.email "seu-email@example.com"
+                        git config user.name "Seu Nome"
                         git add .
                         git commit -m "Atualizando produção via pipeline Jenkins"
-                        git push
+                        git branch -M main
+                        git push origin main
                         '''
                     }
                 }
@@ -186,5 +189,6 @@ pipeline {
 }
 
 
-//Marco Zero + Envio Prod - Teste 1
+
+//Marco Zero + Envio Prod - Teste 2
 //githubToken
