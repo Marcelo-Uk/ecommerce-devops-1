@@ -1,16 +1,15 @@
 pipeline {
     agent any
 
-    // Variável "logs" definida no environment para ser acessível globalmente
     environment {
         logs = ''
+        GITHUB_CREDENTIALS_ID = 'githubToken'
     }
 
     stages {
         stage('Inicializar Variáveis') {
             steps {
                 script {
-                    // Inicialize a variável logs como string vazia para evitar erros
                     logs = ''
                 }
             }
@@ -97,14 +96,12 @@ pipeline {
 
         stage('Subir Containers') {
             steps {
-                echo "Subindo os containers com docker-compose..."
                 bat 'docker-compose up -d'
             }
         }
 
         stage('Verificar Containers') {
             steps {
-                echo "Verificando os containers que estão rodando..."
                 bat 'docker ps -a'
             }
         }
@@ -131,6 +128,27 @@ pipeline {
                     } catch (Exception e) {
                         currentBuild.result = 'FAILURE'
                         error "Erro nos testes unitários:\n${logs}"
+                    }
+                }
+            }
+        }
+
+        stage('Enviar para Produção') {
+            steps {
+                script {
+                    withCredentials([usernamePassword(credentialsId: GITHUB_CREDENTIALS_ID, usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                        echo 'Enviando os arquivos para o repositório de produção...'
+
+                        bat '''
+                        if exist devops-prod (rmdir /s /q devops-prod)
+                        git clone https://${GIT_USER}:${GIT_PASS}@github.com/Marcelo-Uk/devops-prod.git devops-prod
+                        echo devops-prod\\ > exclude.txt
+                        xcopy /E /Y /I . devops-prod\\ /EXCLUDE:exclude.txt
+                        cd devops-prod
+                        git add .
+                        git commit -m "Atualizando produção via pipeline Jenkins"
+                        git push
+                        '''
                     }
                 }
             }
@@ -167,4 +185,6 @@ pipeline {
     }
 }
 
-// Marco Zero Funcional com Unstable (erro ignorado)
+
+//Marco Zero + Envio Prod - Teste 1
+//githubToken
