@@ -166,3 +166,5 @@ pipeline {
         }
     }
 }
+
+// Marco Zero Funcional com Unstable (erro ignorado)
