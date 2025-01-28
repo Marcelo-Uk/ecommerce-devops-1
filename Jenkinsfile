@@ -9,11 +9,11 @@ pipeline {
         }
 
         stage('Build Docker Images') {
-            steps {
-                bat 'docker-compose down'
-                bat 'docker-compose build'
-            }
-        }
+    steps {
+        bat 'docker-compose down --remove-orphans'
+        bat 'docker-compose build'
+    }
+}
 
         stage('Subir Containers') {
             steps {
