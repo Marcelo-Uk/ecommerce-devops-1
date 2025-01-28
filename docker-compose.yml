@@ -23,7 +23,7 @@ services:
   micro_sendproduto:
     image: sendproduto_image
     pull_policy: never
-    container_name: micro_sendproduto_container
+    container_name: sendproduto_container
     ports:
       - "8001:8001"
     networks:
