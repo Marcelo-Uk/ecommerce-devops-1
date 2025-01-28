@@ -19,11 +19,11 @@ pipeline {
                     echo "Removendo todos os containers, imagens, redes e volumes..."
                     try {
                         bat '''
-                            docker stop $(docker ps -q) || echo "Nenhum container ativo para parar"
-                            docker rm $(docker ps -aq) || echo "Nenhum container para remover"
-                            docker rmi $(docker images -q) --force || echo "Nenhuma imagem para remover"
-                            docker network prune -f || echo "Nenhuma rede para remover"
-                            docker volume prune -f || echo "Nenhum volume para remover"
+                            for /f "tokens=*" %i in ('docker ps -q') do docker stop %i
+                            for /f "tokens=*" %i in ('docker ps -aq') do docker rm %i
+                            for /f "tokens=*" %i in ('docker images -q') do docker rmi -f %i
+                            docker network prune -f
+                            docker volume prune -f
                         '''
                     } catch (Exception e) {
                         echo "Erro ao limpar o ambiente: ${e}"
@@ -52,7 +52,7 @@ pipeline {
 
         stage('Build Send Produto') {
             steps {
-                dir('sendproduto') {
+                dir('micro_sendproduto') {
                     echo "Construindo imagem do sendproduto..."
                     bat 'docker build -t sendproduto_image .'
                 }
