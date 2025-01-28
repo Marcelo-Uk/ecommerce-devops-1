@@ -31,7 +31,7 @@ pipeline {
 
         stage('Testes Integrados') {
             steps {
-                bat 'docker exec sendoproduto_container pytest test_integration_sendprodutos.py'
+                bat 'docker exec micro_sendproduto_container pytest test_integration_sendprodutos.py'
             }
         }
         
