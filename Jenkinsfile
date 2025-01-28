@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    environment {
+        logs = '' // Variável global para armazenar logs
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -15,22 +19,22 @@ pipeline {
                     echo "Removendo todos os containers, imagens e redes..."
 
                     // Parar todos os containers
-                    bat """
-                    for /F "tokens=*" %%i in ('docker ps -q') do docker stop %%i || echo Nenhum container ativo para parar
-                    """
+                    bat '''
+                    for /F "tokens=*" %%i in ('docker ps -q') do docker stop %%i
+                    '''
 
                     // Remover todos os containers
-                    bat """
-                    for /F "tokens=*" %%i in ('docker ps -aq') do docker rm %%i || echo Nenhum container para remover
-                    """
+                    bat '''
+                    for /F "tokens=*" %%i in ('docker ps -aq') do docker rm %%i
+                    '''
 
                     // Remover todas as imagens
-                    bat """
-                    for /F "tokens=*" %%i in ('docker images -q') do docker rmi -f %%i || echo Nenhuma imagem para remover
-                    """
+                    bat '''
+                    for /F "tokens=*" %%i in ('docker images -q') do docker rmi -f %%i
+                    '''
 
                     // Remover redes não utilizadas
-                    bat 'docker network prune -f || echo Nenhuma rede para remover'
+                    bat 'docker network prune -f'
                 }
             }
         }
@@ -97,8 +101,6 @@ pipeline {
         stage('Testes Unitários') {
             steps {
                 script {
-                    def logs = ''
-
                     try {
                         echo "=== Rodando testes para micro_login_container (auth_service) ==="
                         logs += "=== Rodando testes para micro_login_container (auth_service) ===\n"
