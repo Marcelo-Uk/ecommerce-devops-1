@@ -13,13 +13,28 @@ pipeline {
             steps {
                 script {
                     echo "Removendo todos os containers, imagens e redes..."
-                    bat 'docker stop $(docker ps -q) || echo "Nenhum container ativo para parar"'
-                    bat 'docker rm $(docker ps -aq) || echo "Nenhum container para remover"'
-                    bat 'docker rmi $(docker images -q) --force || echo "Nenhuma imagem para remover"'
+        
+                    // Parar todos os containers
+                    bat """
+                    for /f "tokens=*" %i in ('docker ps -q') do docker stop %i || echo "Nenhum container ativo para parar"
+                    """
+        
+                    // Remover todos os containers
+                    bat """
+                    for /f "tokens=*" %i in ('docker ps -aq') do docker rm %i || echo "Nenhum container para remover"
+                    """
+        
+                    // Remover todas as imagens
+                    bat """
+                    for /f "tokens=*" %i in ('docker images -q') do docker rmi -f %i || echo "Nenhuma imagem para remover"
+                    """
+        
+                    // Remover todas as redes desnecessárias
                     bat 'docker network prune -f || echo "Nenhuma rede para remover"'
                 }
             }
         }
+
 
         stage('Build Frontend') {
             steps {
