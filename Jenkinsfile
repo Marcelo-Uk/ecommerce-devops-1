@@ -29,23 +29,24 @@ pipeline {
                 bat 'docker exec micro_sendproduto_container python manage.py test sendproduct'
             }
         }
-        /*
-        stage('Testes Integrados') {
-            steps {
-                bat 'docker exec sistema_main_container pytest test_integration_sendprodutos.py'
-            }
-        }
-        */
-
-        /* Teste Unitarios Ok */
-        
+       
     }
     post {
         success {
             echo "Pipeline finalizado com sucesso!"
+            emailext (
+                subject: "Pipeline Sucesso: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: "O pipeline ${env.JOB_NAME} #${env.BUILD_NUMBER} foi finalizado com sucesso.\n\nVeja os detalhes: ${env.BUILD_URL}",
+                to: 'mribeirocorp@gmail.com'
+            )
         }
         failure {
             echo "Pipeline falhou!"
+            emailext (
+                subject: "Pipeline Falhou: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                body: "O pipeline ${env.JOB_NAME} #${env.BUILD_NUMBER} falhou.\n\nVeja os detalhes do erro: ${env.BUILD_URL}",
+                to: 'mribeirocorp@gmail.com'
+            )
         }
     }
 }
