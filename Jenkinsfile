@@ -3,9 +3,9 @@ pipeline {
 
     // Variável "logs" definida no environment para ser acessível globalmente
     environment {
-        logs = ''
-        GITHUB_CREDENTIALS_ID = 'githubKey' // Substitua pelo ID da credencial que você configurou
-        GITHUB_REPO_URL = 'git@github.com:Marcelo-Uk/devops-prod.git' // URL SSH do repositório de destino
+        logs = '' // Variável global para armazenar logs
+        GITHUB_REPO_URL = 'https://github.com/Marcelo-Uk/devops-prod.git' // Repositório de destino
+        GITHUB_CREDENTIALS_ID = 'githubToken' // Substitua pelo ID da credencial que você configurou no Jenkins
     }
 
     stages {
@@ -131,30 +131,29 @@ pipeline {
             }
         }
 
-        stage('Upload para Repositório de Produção') {
+        stage('Enviar para Produção') {
             steps {
                 script {
-                    // Clonar o repositório de destino
-                    echo "Clonando o repositório de destino..."
-                    bat '''
-                    if exist devops-prod (rmdir /s /q devops-prod)
-                    git clone %GITHUB_REPO_URL% devops-prod
-                    '''
+                    echo "Enviando os arquivos para o repositório de produção..."
 
-                    // Copiar os arquivos do workspace para o repositório clonado
-                    echo "Copiando arquivos para o repositório de destino..."
-                    bat '''
-                    xcopy * devops-prod /e /y /q
-                    '''
+                    // Clona o repositório de produção usando as credenciais configuradas
+                    withCredentials([usernamePassword(credentialsId: "${GITHUB_CREDENTIALS_ID}", usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
+                        bat """
+                        if exist devops-prod (rmdir /s /q devops-prod)
+                        git clone https://${GIT_USER}:${GIT_PASS}@github.com/Marcelo-Uk/devops-prod.git devops-prod
+                        """
 
-                    // Realizar commit e push
-                    dir('devops-prod') {
-                        echo "Commitando e enviando os arquivos..."
-                        bat '''
-                        git add .
-                        git commit -m "Atualização do código pela pipeline Jenkins"
-                        git push origin main
-                        '''
+                        // Copia os arquivos do workspace para o repositório clonado
+                        bat 'xcopy /E /Y /I * devops-prod\\'
+
+                        dir('devops-prod') {
+                            // Adiciona, faz commit e push dos arquivos
+                            bat """
+                            git add .
+                            git commit -m "Deploy automático via Jenkins: ${env.BUILD_NUMBER}"
+                            git push https://${GIT_USER}:${GIT_PASS}@github.com/Marcelo-Uk/devops-prod.git
+                            """
+                        }
                     }
                 }
             }
