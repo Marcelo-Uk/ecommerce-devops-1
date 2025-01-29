@@ -138,7 +138,7 @@ pipeline {
                     try {
                         withCredentials([string(credentialsId: 'githubTokenSecText', variable: 'GIT_TOKEN')]) {
                             def repoUrl = "https://x-access-token:${GIT_TOKEN}@github.com/Marcelo-Uk/ecommerce-devops-1.git"
-        
+
                             echo "🔍 Configurando autenticação no Git..."
                             bat """
                             git config --global credential.helper store
@@ -146,19 +146,19 @@ pipeline {
                             git config --global user.email "seu-email@example.com"
                             git config --global user.name "Seu Nome"
                             """
-        
+
                             echo "🔍 Atualizando informações do repositório remoto..."
-                            bat 'git fetch --all'
-        
+                            bat 'git fetch --all --prune'
+
                             echo "🔍 Verificando se a branch 'develop' existe no repositório remoto..."
                             def branchExists = bat(script: "git ls-remote --heads ${repoUrl} develop", returnStdout: true).trim()
-        
+
                             if (branchExists == "") {
                                 echo "🚀 Branch 'develop' NÃO existe. Criando a partir da main e enviando para o repositório..."
                                 bat """
                                 git checkout main
                                 git checkout -b develop
-                                git push --set-upstream origin develop
+                                timeout 120 git push --set-upstream origin develop
                                 """
                             } else {
                                 echo "✅ Branch 'develop' já existe. Atualizando-a com as mudanças da main..."
@@ -166,17 +166,10 @@ pipeline {
                                 git checkout develop
                                 git pull origin develop
                                 git merge main
-                                git push origin develop
+                                timeout 120 git push origin develop --verbose
                                 """
                             }
-        
-                            echo "📤 Enviando código atualizado para a branch 'develop'..."
-                            bat """
-                            git add .
-                            git commit -m "🚀 Atualização via pipeline Jenkins - Merge da main para develop"
-                            git push origin develop
-                            """
-        
+
                             echo "🧹 Limpando credenciais temporárias..."
                             bat "del %USERPROFILE%\\.git-credentials"
                         }
