@@ -141,19 +141,19 @@ pipeline {
                             bat 'git fetch --all'
         
                             echo "🔍 Verificando se a branch 'develop' existe no repositório remoto..."
-                            def branchExists = bat(script: 'git ls-remote --heads https://x-access-token:%GIT_TOKEN%@github.com/usuario/repositorio.git develop | findstr /C:"develop"', returnStdout: true).trim()
+                            def branchExists = bat(script: 'git ls-remote --heads https://x-access-token:%GIT_TOKEN%@github.com/Marcelo-Uk/ecommerce-devops-1.git develop | findstr /C:"develop"', returnStdout: true).trim()
         
                             if (branchExists == "") {
                                 echo "🚀 Branch 'develop' NÃO existe. Criando e enviando para o repositório..."
                                 bat '''
                                 git checkout -b develop
-                                git push --set-upstream https://x-access-token:%GIT_TOKEN%@github.com/usuario/repositorio.git develop
+                                git push --set-upstream https://x-access-token:%GIT_TOKEN%@github.com/Marcelo-Uk/ecommerce-devops-1.git develop
                                 '''
                             } else {
                                 echo "✅ Branch 'develop' já existe. Trocando para ela..."
                                 bat '''
                                 git checkout develop
-                                git pull https://x-access-token:%GIT_TOKEN%@github.com/usuario/repositorio.git develop
+                                git pull https://x-access-token:%GIT_TOKEN%@github.com/Marcelo-Uk/ecommerce-devops-1.git develop
                                 '''
                             }
         
@@ -161,7 +161,7 @@ pipeline {
                             bat '''
                             git add .
                             git commit -m "🚀 Atualização via pipeline Jenkins"
-                            git push https://x-access-token:%GIT_TOKEN%@github.com/usuario/repositorio.git develop
+                            git push https://x-access-token:%GIT_TOKEN%@github.com/Marcelo-Uk/ecommerce-devops-1.git develop
                             '''
                         }
                     } catch (Exception e) {
