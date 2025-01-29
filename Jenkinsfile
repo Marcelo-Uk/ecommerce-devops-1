@@ -137,34 +137,45 @@ pipeline {
                 script {
                     try {
                         withCredentials([string(credentialsId: 'githubTokenSecText', variable: 'GIT_TOKEN')]) {
-                            def repoUrl = "https://!GIT_TOKEN!@github.com/Marcelo-Uk/ecommerce-devops-1.git"
+                            def repoUrl = "https://github.com/Marcelo-Uk/ecommerce-devops-1.git"
+        
+                            echo "🔍 Configurando autenticação no Git..."
+                            bat """
+                            git config --global credential.helper store
+                            echo https://x-access-token:%GIT_TOKEN%@github.com > %USERPROFILE%\\.git-credentials
+                            git config --global user.email "seu-email@example.com"
+                            git config --global user.name "Seu Nome"
+                            """
         
                             echo "🔍 Atualizando informações do repositório remoto..."
                             bat 'git fetch --all'
         
                             echo "🔍 Verificando se a branch 'develop' existe no repositório remoto..."
-                            def branchExists = bat(script: "git ls-remote --heads \"${repoUrl}\" develop | findstr /C:\"develop\"", returnStdout: true).trim()
+                            def branchExists = bat(script: "git ls-remote --heads ${repoUrl} develop | findstr /C:\"develop\"", returnStdout: true).trim()
         
                             if (branchExists == "") {
                                 echo "🚀 Branch 'develop' NÃO existe. Criando e enviando para o repositório..."
                                 bat """
                                 git checkout -b develop
-                                git push --set-upstream \"${repoUrl}\" develop
+                                git push --set-upstream origin develop
                                 """
                             } else {
                                 echo "✅ Branch 'develop' já existe. Trocando para ela..."
                                 bat """
                                 git checkout develop
-                                git pull \"${repoUrl}\" develop
+                                git pull origin develop
                                 """
                             }
         
                             echo "📤 Enviando código atualizado para a branch 'develop'..."
                             bat """
                             git add .
-                            git commit -m \"🚀 Atualização via pipeline Jenkins\"
-                            git push \"${repoUrl}\" develop
+                            git commit -m "🚀 Atualização via pipeline Jenkins"
+                            git push origin develop
                             """
+        
+                            echo "🧹 Limpando credenciais temporárias..."
+                            bat "del %USERPROFILE%\\.git-credentials"
                         }
                     } catch (Exception e) {
                         error "❌ Erro ao enviar alterações para a branch 'develop': ${e.message}"
@@ -172,6 +183,7 @@ pipeline {
                 }
             }
         }
+
 
 
 
