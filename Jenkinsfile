@@ -131,7 +131,7 @@ pipeline {
                 }
             }
         }
-
+/*
         stage('Enviar para Produção') {
             steps {
                 timeout(time: 3, unit: 'MINUTES') { // Timeout para o bloco inteiro
@@ -181,19 +181,7 @@ pipeline {
                 }
             }
         }
-
-
-
-
-
-
-
-
-
-
-
-
-
+*/
     }
 
     post {
