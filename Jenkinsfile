@@ -137,32 +137,34 @@ pipeline {
                 script {
                     try {
                         withCredentials([string(credentialsId: 'githubTokenSecText', variable: 'GIT_TOKEN')]) {
+                            def repoUrl = "https://%GIT_TOKEN%@github.com/Marcelo-Uk/ecommerce-devops-1.git"
+        
                             echo "🔍 Atualizando informações do repositório remoto..."
                             bat 'git fetch --all'
         
                             echo "🔍 Verificando se a branch 'develop' existe no repositório remoto..."
-                            def branchExists = bat(script: 'git ls-remote --heads https://x-access-token:%GIT_TOKEN%@github.com/Marcelo-Uk/ecommerce-devops-1.git develop | findstr /C:"develop"', returnStdout: true).trim()
+                            def branchExists = bat(script: "git ls-remote --heads ${repoUrl} develop | findstr /C:\"develop\"", returnStdout: true).trim()
         
                             if (branchExists == "") {
                                 echo "🚀 Branch 'develop' NÃO existe. Criando e enviando para o repositório..."
-                                bat '''
+                                bat """
                                 git checkout -b develop
-                                git push --set-upstream https://x-access-token:%GIT_TOKEN%@github.com/Marcelo-Uk/ecommerce-devops-1.git develop
-                                '''
+                                git push --set-upstream ${repoUrl} develop
+                                """
                             } else {
                                 echo "✅ Branch 'develop' já existe. Trocando para ela..."
-                                bat '''
+                                bat """
                                 git checkout develop
-                                git pull https://x-access-token:%GIT_TOKEN%@github.com/Marcelo-Uk/ecommerce-devops-1.git develop
-                                '''
+                                git pull ${repoUrl} develop
+                                """
                             }
         
                             echo "📤 Enviando código atualizado para a branch 'develop'..."
-                            bat '''
+                            bat """
                             git add .
                             git commit -m "🚀 Atualização via pipeline Jenkins"
-                            git push https://x-access-token:%GIT_TOKEN%@github.com/Marcelo-Uk/ecommerce-devops-1.git develop
-                            '''
+                            git push ${repoUrl} develop
+                            """
                         }
                     } catch (Exception e) {
                         error "❌ Erro ao enviar alterações para a branch 'develop': ${e.message}"
@@ -170,6 +172,7 @@ pipeline {
                 }
             }
         }
+
 
 
 
