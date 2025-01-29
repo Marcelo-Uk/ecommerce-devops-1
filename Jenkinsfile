@@ -154,23 +154,26 @@ pipeline {
                             def branchExists = bat(script: "git ls-remote --heads ${repoUrl} develop", returnStdout: true).trim()
         
                             if (branchExists == "") {
-                                echo "🚀 Branch 'develop' NÃO existe. Criando e enviando para o repositório..."
+                                echo "🚀 Branch 'develop' NÃO existe. Criando a partir da main e enviando para o repositório..."
                                 bat """
+                                git checkout main
                                 git checkout -b develop
                                 git push --set-upstream origin develop
                                 """
                             } else {
-                                echo "✅ Branch 'develop' já existe. Trocando para ela..."
+                                echo "✅ Branch 'develop' já existe. Atualizando-a com as mudanças da main..."
                                 bat """
                                 git checkout develop
                                 git pull origin develop
+                                git merge main
+                                git push origin develop
                                 """
                             }
         
                             echo "📤 Enviando código atualizado para a branch 'develop'..."
                             bat """
                             git add .
-                            git commit -m "🚀 Atualização via pipeline Jenkins"
+                            git commit -m "🚀 Atualização via pipeline Jenkins - Merge da main para develop"
                             git push origin develop
                             """
         
@@ -183,6 +186,7 @@ pipeline {
                 }
             }
         }
+
 
 
 
