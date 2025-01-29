@@ -3,7 +3,6 @@ pipeline {
 
     environment {
         logs = ''
-        GITHUB_CREDENTIALS_ID = 'githubToken'
     }
 
     stages {
@@ -136,24 +135,36 @@ pipeline {
         stage('Enviar para Produção') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: GITHUB_CREDENTIALS_ID, usernameVariable: 'GIT_USER', passwordVariable: 'GIT_PASS')]) {
-                        echo 'Enviando os arquivos para o repositório de produção...'
+                    try {
+                        echo "Verificando se a branch 'develop' existe no repositório remoto..."
 
-                        bat '''
-                        REM Configurar nome e email do autor para o commit
-                        git config user.email "mribeirocorp@gmail.com"
-                        git config user.name "Marcelo-Uk"
+                        // Comando para verificar se a branch 'develop' existe no remoto
+                        def branchExists = sh(
+                            script: """
+                            git ls-remote --heads origin develop | wc -l
+                            """, 
+                            returnStdout: true
+                        ).trim()
 
-                        REM Verificar e criar o branch main, se necessário
-                        git checkout -b main || git checkout main
+                        if (branchExists == "0") {
+                            echo "Branch 'develop' não existe. Criando branch 'develop'..."
+                            sh '''
+                            # Criar a branch 'develop' baseada na branch atual
+                            git checkout -b develop
+                            git push origin develop
+                            '''
+                        } else {
+                            echo "Branch 'develop' já existe. Fazendo push para 'develop'..."
+                        }
 
-                        REM Adicionar arquivos e fazer commit
+                        // Fazer o push para a branch 'develop'
+                        sh '''
                         git add .
-                        git commit -m "Atualizando produção via pipeline Jenkins" || echo "Nada para commitar, talvez sem alterações"
-
-                        REM Fazer o push para o repositório remoto
-                        git push https://${GIT_USER}:${GIT_PASS}@github.com/Marcelo-Uk/devops-prod.git main || echo "Erro no push. Confirme se o branch main existe no repositório remoto."
+                        git commit -m "Atualização via pipeline Jenkins"
+                        git push origin develop
                         '''
+                    } catch (Exception e) {
+                        error "Erro ao enviar alterações para a branch 'develop': ${e.message}"
                     }
                 }
             }
