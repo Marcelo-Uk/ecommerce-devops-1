@@ -137,18 +137,22 @@ pipeline {
                 script {
                     try {
                         echo "🔍 Verificando se a branch 'develop' existe no repositório remoto..."
+                        
+                        // Atualiza referências remotas antes da verificação
+                        bat 'git fetch origin'
         
-                        // Verifica se a branch 'develop' existe no repositório remoto
+                        // Verifica se a branch 'develop' existe no remoto
                         def branchExists = bat(script: 'git ls-remote --heads origin develop | find /C "develop"', returnStdout: true).trim()
         
                         if (branchExists == "0") {
                             echo "🚀 Branch 'develop' NÃO existe. Criando e enviando para o repositório..."
                             bat '''
                             git checkout -b develop
-                            git push origin develop
+                            git push --set-upstream origin develop
                             '''
                         } else {
                             echo "✅ Branch 'develop' já existe. Apenas fazendo push das alterações..."
+                            bat 'git checkout develop'
                         }
         
                         // Commit e push das alterações para a branch develop
@@ -163,6 +167,7 @@ pipeline {
                 }
             }
         }
+
 
 
     }
