@@ -136,7 +136,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        withCredentials([string(credentialsId: 'githubToken', variable: 'GIT_TOKEN')]) {
+                        withCredentials([string(credentialsId: 'githubTokenSecText', variable: 'GIT_TOKEN')]) {
                             echo "🔍 Atualizando informações do repositório remoto..."
                             bat 'git fetch --all'
         
