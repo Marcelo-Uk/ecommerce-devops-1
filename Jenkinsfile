@@ -137,33 +137,33 @@ pipeline {
                 script {
                     try {
                         withCredentials([string(credentialsId: 'githubTokenSecText', variable: 'GIT_TOKEN')]) {
-                            def repoUrl = "https://%GIT_TOKEN%@github.com/Marcelo-Uk/ecommerce-devops-1.git"
+                            def repoUrl = "https://!GIT_TOKEN!@github.com/Marcelo-Uk/ecommerce-devops-1.git"
         
                             echo "🔍 Atualizando informações do repositório remoto..."
                             bat 'git fetch --all'
         
                             echo "🔍 Verificando se a branch 'develop' existe no repositório remoto..."
-                            def branchExists = bat(script: "git ls-remote --heads ${repoUrl} develop | findstr /C:\"develop\"", returnStdout: true).trim()
+                            def branchExists = bat(script: "git ls-remote --heads \"${repoUrl}\" develop | findstr /C:\"develop\"", returnStdout: true).trim()
         
                             if (branchExists == "") {
                                 echo "🚀 Branch 'develop' NÃO existe. Criando e enviando para o repositório..."
                                 bat """
                                 git checkout -b develop
-                                git push --set-upstream ${repoUrl} develop
+                                git push --set-upstream \"${repoUrl}\" develop
                                 """
                             } else {
                                 echo "✅ Branch 'develop' já existe. Trocando para ela..."
                                 bat """
                                 git checkout develop
-                                git pull ${repoUrl} develop
+                                git pull \"${repoUrl}\" develop
                                 """
                             }
         
                             echo "📤 Enviando código atualizado para a branch 'develop'..."
                             bat """
                             git add .
-                            git commit -m "🚀 Atualização via pipeline Jenkins"
-                            git push ${repoUrl} develop
+                            git commit -m \"🚀 Atualização via pipeline Jenkins\"
+                            git push \"${repoUrl}\" develop
                             """
                         }
                     } catch (Exception e) {
@@ -172,6 +172,7 @@ pipeline {
                 }
             }
         }
+
 
 
 
