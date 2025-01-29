@@ -136,39 +136,34 @@ pipeline {
             steps {
                 script {
                     try {
-                        echo "Verificando se a branch 'develop' existe no repositório remoto..."
-
-                        // Comando para verificar se a branch 'develop' existe no remoto
-                        def branchExists = sh(
-                            script: """
-                            git ls-remote --heads origin develop | wc -l
-                            """, 
-                            returnStdout: true
-                        ).trim()
-
+                        echo "🔍 Verificando se a branch 'develop' existe no repositório remoto..."
+        
+                        // Verifica se a branch 'develop' existe no repositório remoto
+                        def branchExists = bat(script: 'git ls-remote --heads origin develop | find /C "develop"', returnStdout: true).trim()
+        
                         if (branchExists == "0") {
-                            echo "Branch 'develop' não existe. Criando branch 'develop'..."
-                            sh '''
-                            # Criar a branch 'develop' baseada na branch atual
+                            echo "🚀 Branch 'develop' NÃO existe. Criando e enviando para o repositório..."
+                            bat '''
                             git checkout -b develop
                             git push origin develop
                             '''
                         } else {
-                            echo "Branch 'develop' já existe. Fazendo push para 'develop'..."
+                            echo "✅ Branch 'develop' já existe. Apenas fazendo push das alterações..."
                         }
-
-                        // Fazer o push para a branch 'develop'
-                        sh '''
+        
+                        // Commit e push das alterações para a branch develop
+                        bat '''
                         git add .
-                        git commit -m "Atualização via pipeline Jenkins"
+                        git commit -m "🚀 Atualização via pipeline Jenkins"
                         git push origin develop
                         '''
                     } catch (Exception e) {
-                        error "Erro ao enviar alterações para a branch 'develop': ${e.message}"
+                        error "❌ Erro ao enviar alterações para a branch 'develop': ${e.message}"
                     }
                 }
             }
         }
+
 
     }
 
