@@ -136,37 +136,41 @@ pipeline {
             steps {
                 script {
                     try {
-                        echo "🔍 Verificando se a branch 'develop' existe no repositório remoto..."
-                        
-                        // Atualiza referências remotas antes da verificação
-                        bat 'git fetch origin'
+                        withCredentials([string(credentialsId: 'githubToken', variable: 'GIT_TOKEN')]) {
+                            echo "🔍 Atualizando informações do repositório remoto..."
+                            bat 'git fetch --all'
         
-                        // Verifica se a branch 'develop' existe no remoto
-                        def branchExists = bat(script: 'git ls-remote --heads origin develop | find /C "develop"', returnStdout: true).trim()
+                            echo "🔍 Verificando se a branch 'develop' existe no repositório remoto..."
+                            def branchExists = bat(script: 'git branch -r | findstr /R /C:"origin/develop"', returnStdout: true).trim()
         
-                        if (branchExists == "0") {
-                            echo "🚀 Branch 'develop' NÃO existe. Criando e enviando para o repositório..."
+                            if (branchExists == "") {
+                                echo "🚀 Branch 'develop' NÃO existe. Criando e enviando para o repositório..."
+                                bat '''
+                                git checkout -b develop
+                                git push --set-upstream https://x-access-token:%GIT_TOKEN%@github.com/usuario/repositorio.git develop
+                                '''
+                            } else {
+                                echo "✅ Branch 'develop' já existe. Trocando para ela..."
+                                bat '''
+                                git checkout develop
+                                git pull https://x-access-token:%GIT_TOKEN%@github.com/usuario/repositorio.git develop
+                                '''
+                            }
+        
+                            echo "📤 Enviando código atualizado para a branch 'develop'..."
                             bat '''
-                            git checkout -b develop
-                            git push --set-upstream origin develop
+                            git add .
+                            git commit -m "🚀 Atualização via pipeline Jenkins"
+                            git push https://x-access-token:%GIT_TOKEN%@github.com/usuario/repositorio.git develop
                             '''
-                        } else {
-                            echo "✅ Branch 'develop' já existe. Apenas fazendo push das alterações..."
-                            bat 'git checkout develop'
                         }
-        
-                        // Commit e push das alterações para a branch develop
-                        bat '''
-                        git add .
-                        git commit -m "🚀 Atualização via pipeline Jenkins"
-                        git push origin develop
-                        '''
                     } catch (Exception e) {
                         error "❌ Erro ao enviar alterações para a branch 'develop': ${e.message}"
                     }
                 }
             }
         }
+
 
 
 
