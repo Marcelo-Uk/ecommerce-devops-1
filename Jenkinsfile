@@ -136,13 +136,13 @@ pipeline {
             steps {
                 script {
                     try {
-                        withCredentials([string(credentialsId: 'githubTokenSecText', variable: 'GIT_TOKEN')]) {
+                        withCredentials([string(credentialsId: 'githubToken', variable: 'GIT_TOKEN')]) {
                             echo "🔍 Atualizando informações do repositório remoto..."
                             bat 'git fetch --all'
-
+        
                             echo "🔍 Verificando se a branch 'develop' existe no repositório remoto..."
-                            def branchExists = bat(script: 'git branch -r | findstr /R /C:"origin/develop"', returnStdout: true).trim()
-
+                            def branchExists = bat(script: 'git ls-remote --heads https://x-access-token:%GIT_TOKEN%@github.com/usuario/repositorio.git develop | findstr /C:"develop"', returnStdout: true).trim()
+        
                             if (branchExists == "") {
                                 echo "🚀 Branch 'develop' NÃO existe. Criando e enviando para o repositório..."
                                 bat '''
@@ -156,7 +156,7 @@ pipeline {
                                 git pull https://x-access-token:%GIT_TOKEN%@github.com/usuario/repositorio.git develop
                                 '''
                             }
-
+        
                             echo "📤 Enviando código atualizado para a branch 'develop'..."
                             bat '''
                             git add .
@@ -170,6 +170,7 @@ pipeline {
                 }
             }
         }
+
 
 
 
