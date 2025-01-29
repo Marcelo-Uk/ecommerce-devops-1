@@ -133,27 +133,27 @@ pipeline {
         }
 
         stage('Enviar para Produção') {
-            timeout(time: 3, unit: 'MINUTES') { // Timeout de 3 minutos
-                steps {
+            steps {
+                timeout(time: 3, unit: 'MINUTES') { // Timeout para o bloco inteiro
                     script {
                         try {
                             withCredentials([string(credentialsId: 'githubTokenSecText', variable: 'GIT_TOKEN')]) {
                                 def repoUrl = "https://x-access-token:${GIT_TOKEN}@github.com/Marcelo-Uk/ecommerce-devops-1.git"
-        
+
                                 echo "🔍 Configurando autenticação no Git..."
                                 bat """
                                 git config --global credential.helper store
                                 echo ${repoUrl} > %USERPROFILE%\\.git-credentials
-                                git config --global user.email "seu-email@example.com"
-                                git config --global user.name "Seu Nome"
+                                git config --global user.email "mribeirocorp@gmail.com"
+                                git config --global user.name "Marcelo Uk"
                                 """
-        
+
                                 echo "🔍 Atualizando informações do repositório remoto..."
                                 bat 'git fetch --all --prune'
-        
+
                                 echo "🔍 Verificando se a branch 'develop' existe no repositório remoto..."
                                 def branchExists = bat(script: "git ls-remote --heads ${repoUrl} develop", returnStdout: true).trim()
-        
+
                                 if (branchExists == "") {
                                     echo "🚀 Branch 'develop' NÃO existe. Criando a partir da main e enviando para o repositório..."
                                     bat """
@@ -170,7 +170,7 @@ pipeline {
                                     git push origin develop --verbose
                                     """
                                 }
-        
+
                                 echo "🧹 Limpando credenciais temporárias..."
                                 bat "del %USERPROFILE%\\.git-credentials"
                             }
@@ -181,6 +181,7 @@ pipeline {
                 }
             }
         }
+
 
 
 
