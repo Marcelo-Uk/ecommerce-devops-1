@@ -13,7 +13,12 @@ class AuthServiceTests(APITestCase):
         self.login_url = "/api/auth/login/"
         self.logout_url = "/api/auth/logout/"
 
-    def test_login_com_sucesso(self):
+    #Envia uma requisição POST para /api/auth/login/ com credenciais válidas.
+    #Verifica se:
+    #O status da resposta é 200 OK.
+    #O JSON de resposta contém os tokens access e refresh.
+    #O token de acesso contém os dados corretos do usuário.
+    def test_login_com_sucesso(self): # ^ ^ ^
         """Teste de login com credenciais corretas"""
         response = self.client.post(self.login_url, {
             "username": "testuser",
@@ -29,6 +34,9 @@ class AuthServiceTests(APITestCase):
         self.assertEqual(decoded_access["username"], "testuser")
         self.assertEqual(decoded_access["user_id"], self.user.id)
 
+    #Verifica se:
+    #O status da resposta é 401 Unauthorized.
+    #O JSON contém uma mensagem de erro (detail).
     def test_login_com_credenciais_invalidas(self):
         """Teste de login com credenciais incorretas"""
         response = self.client.post(self.login_url, {
