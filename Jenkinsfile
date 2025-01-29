@@ -137,12 +137,12 @@ pipeline {
                 script {
                     try {
                         withCredentials([string(credentialsId: 'githubTokenSecText', variable: 'GIT_TOKEN')]) {
-                            def repoUrl = "https://github.com/Marcelo-Uk/ecommerce-devops-1.git"
+                            def repoUrl = "https://x-access-token:${GIT_TOKEN}@github.com/Marcelo-Uk/ecommerce-devops-1.git"
         
                             echo "🔍 Configurando autenticação no Git..."
                             bat """
                             git config --global credential.helper store
-                            echo https://x-access-token:%GIT_TOKEN%@github.com > %USERPROFILE%\\.git-credentials
+                            echo ${repoUrl} > %USERPROFILE%\\.git-credentials
                             git config --global user.email "seu-email@example.com"
                             git config --global user.name "Seu Nome"
                             """
@@ -151,7 +151,7 @@ pipeline {
                             bat 'git fetch --all'
         
                             echo "🔍 Verificando se a branch 'develop' existe no repositório remoto..."
-                            def branchExists = bat(script: "git ls-remote --heads ${repoUrl} develop | findstr /C:\"develop\"", returnStdout: true).trim()
+                            def branchExists = bat(script: "git ls-remote --heads ${repoUrl} develop", returnStdout: true).trim()
         
                             if (branchExists == "") {
                                 echo "🚀 Branch 'develop' NÃO existe. Criando e enviando para o repositório..."
@@ -183,6 +183,7 @@ pipeline {
                 }
             }
         }
+
 
 
 
